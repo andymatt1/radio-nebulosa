@@ -1,8 +1,5 @@
 package com.andymatt1.radionebulosa.ui.player
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -25,8 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.AddPhotoAlternate
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Pause
@@ -36,7 +31,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
@@ -73,17 +67,7 @@ fun PlayerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
     val buffering by viewModel.buffering.collectAsState()
     val volume by viewModel.volume.collectAsState()
     val favorites by viewModel.favorites.favorites.collectAsState()
-    val images by viewModel.stationImages.images.collectAsState()
     val context = LocalContext.current
-
-    // Selector de imagen del dispositivo (galería/archivos).
-    val imagePicker = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            station?.id?.let { viewModel.stationImages.save(it, uri) }
-        }
-    }
 
     val transition = rememberInfiniteTransition(label = "player_halo")
     val haloScale by transition.animateFloat(
@@ -120,15 +104,13 @@ fun PlayerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
     }
 
     val current = station!!
-    val customImage = images[current.id]
 
     Box(Modifier.fillMaxSize().background(SpaceBlack)) {
-        // Fondo dinámico y difuminado a partir del logo (o de la foto elegida).
-        val backgroundImage = customImage ?: current.favicon
-        if (backgroundImage.isNotBlank()) {
+        // Fondo dinámico y difuminado a partir del logo oficial.
+        if (current.favicon.isNotBlank()) {
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data(backgroundImage)
+                    .data(current.favicon)
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
@@ -182,12 +164,7 @@ fun PlayerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                             )
                         )
                 )
-                StationLogo(
-                    station = current,
-                    size = 196.dp,
-                    cornerPercent = 50,
-                    customImage = customImage
-                )
+                StationLogo(station = current, size = 196.dp, cornerPercent = 50)
             }
 
             Spacer(Modifier.height(26.dp))
@@ -230,39 +207,7 @@ fun PlayerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
-
-            // El usuario puede elegir una imagen de su dispositivo para esta emisora.
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedButton(onClick = { imagePicker.launch("image/*") }) {
-                    Icon(
-                        Icons.Filled.AddPhotoAlternate,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(Modifier.width(6.dp))
-                    Text(if (customImage != null) "Cambiar foto" else "Poner foto")
-                }
-
-                if (customImage != null) {
-                    Spacer(Modifier.width(8.dp))
-                    OutlinedButton(onClick = { viewModel.stationImages.remove(current.id) }) {
-                        Icon(
-                            Icons.Filled.Delete,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        Text("Quitar")
-                    }
-                }
-            }
-
-            Spacer(Modifier.weight(0.18f))
+            Spacer(Modifier.weight(0.26f))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = null, tint = MutedText)
@@ -287,16 +232,27 @@ fun PlayerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { viewModel.favorites.toggle(current.id) }) {
-                    Icon(
-                        imageVector = if (favorites.contains(current.id)) {
-                            Icons.Filled.Favorite
-                        } else {
-                            Icons.Filled.FavoriteBorder
-                        },
-                        contentDescription = "Favoritos",
-                        tint = if (favorites.contains(current.id)) NeonMagenta else MutedText,
-                        modifier = Modifier.size(28.dp)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(onClick = { viewModel.favorites.toggle(current) }) {
+                        Icon(
+                            imageVector = if (favorites.contains(current.id)) {
+                                Icons.Filled.Favorite
+                            } else {
+                                Icons.Filled.FavoriteBorder
+                            },
+                            contentDescription = if (favorites.contains(current.id)) {
+                                "Quitar de favoritos"
+                            } else {
+                                "Agregar a favoritos"
+                            },
+                            tint = if (favorites.contains(current.id)) NeonMagenta else MutedText,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                    Text(
+                        text = if (favorites.contains(current.id)) "Guardada" else "Favorito",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (favorites.contains(current.id)) NeonMagenta else MutedText
                     )
                 }
 

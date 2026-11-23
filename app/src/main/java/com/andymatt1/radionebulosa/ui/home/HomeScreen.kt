@@ -91,23 +91,36 @@ fun HomeScreen(
     val favorites by viewModel.favorites.favorites.collectAsState()
     val current by viewModel.currentStation.collectAsState()
     val isPlaying by viewModel.isPlaying.collectAsState()
-    val images by viewModel.stationImages.images.collectAsState()
+    val favoriteStations by viewModel.favorites.favoriteStations.collectAsState()
     val focusManager = LocalFocusManager.current
 
     var query by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf(Category.ALL) }
+    var onlyFavorites by rememberSaveable { mutableStateOf(false) }
 
     // Se normaliza la consulta para que "bogota" encuentre "Bogotá".
     val normalizedQuery = remember(query) { query.normalizedForSearch() }
-    val filtered = remember(stations, normalizedQuery, category) {
+    val filtered = remember(stations, normalizedQuery, category, onlyFavorites, favorites) {
         stations.filter { station ->
-            category.matches(station) &&
+            (!onlyFavorites || station.id in favorites) &&
+                category.matches(station) &&
                 (normalizedQuery.isBlank() || station.searchableText.normalizedForSearch().contains(normalizedQuery))
         }
     }
 
+    // Los favoritos se guardan completos, pero también se hidratan los IDs
+    // antiguos que aún estén presentes en el catálogo actual.
+    val favoriteList = remember(favorites, favoriteStations, stations) {
+        val byId = favoriteStations.associateBy { it.id }
+        val result = favoriteStations.filter { it.id in favorites }.toMutableList()
+        favorites.forEach { id ->
+            if (id !in byId) stations.firstOrNull { it.id == id }?.let(result::add)
+        }
+        result
+    }
+
     val featured = remember(stations) {
-        stations.filter { it.favicon.isNotBlank() || it.id in images }.take(8)
+        stations.filter { it.favicon.isNotBlank() }.take(8)
     }
     val cities = remember(stations) {
         stations.map { it.cityName }.distinct().take(10)
@@ -129,9 +142,10 @@ fun HomeScreen(
                     MiniPlayer(
                         station = station,
                         isPlaying = isPlaying,
+                        isFavorite = favorites.contains(station.id),
                         onTogglePlay = viewModel::togglePlayPause,
-                        onOpen = onOpenPlayer,
-                        customImage = images[station.id]
+                        onFavorite = { viewModel.favorites.toggle(station) },
+                        onOpen = onOpenPlayer
                     )
                 }
             }
@@ -143,10 +157,24 @@ fun HomeScreen(
                 .padding(padding)
                 .imePadding()
         ) {
+            if (favoriteList.isNotEmpty()) {
+                item {
+                    SectionTitle("Mis favoritos (${favoriteList.size})")
+                    FavoritesCarousel(
+                        stations = favoriteList,
+                        onSelect = { station ->
+                            viewModel.play(station)
+                            onOpenPlayer()
+                        },
+                        onRemove = { station -> viewModel.favorites.toggle(station) }
+                    )
+                }
+            }
+
             if (featured.isNotEmpty()) {
                 item {
                     SectionTitle("Emisoras destacadas de Colombia")
-                    FeaturedCarousel(featured, images) { station ->
+                    FeaturedCarousel(featured) { station ->
                         viewModel.play(station)
                         onOpenPlayer()
                     }
@@ -154,8 +182,18 @@ fun HomeScreen(
             }
 
             item {
-                SectionTitle("Explora por género")
-                CategoryPills(category) { category = it }
+                SectionTitle("Explora por género y favoritos")
+                CategoryPills(
+                    selected = category,
+                    onlyFavorites = onlyFavorites,
+                    hasFavorites = favorites.isNotEmpty(),
+                    onFavoritesToggle = { favoritesSelected ->
+                        onlyFavorites = favoritesSelected
+                    },
+                    onSelect = { selectedCategory ->
+                        category = selectedCategory
+                    }
+                )
             }
 
             if (cities.isNotEmpty()) {
@@ -167,10 +205,10 @@ fun HomeScreen(
 
             item {
                 SectionTitle(
-                    if (category == Category.ALL && query.isBlank()) {
-                        "Todas las emisoras (${filtered.size})"
-                    } else {
-                        "Resultados (${filtered.size})"
+                    when {
+                        onlyFavorites -> "Emisoras favoritas (${filtered.size})"
+                        category == Category.ALL && query.isBlank() -> "Todas las emisoras (${filtered.size})"
+                        else -> "Resultados (${filtered.size})"
                     }
                 )
             }
@@ -178,13 +216,12 @@ fun HomeScreen(
             items(filtered, key = { it.id + it.streamUrl }) { station ->
                 StationCard(
                     station = station,
-                    customImage = images[station.id],
                     isFavorite = favorites.contains(station.id),
                     onPlay = {
                         viewModel.play(station)
                         onOpenPlayer()
                     },
-                    onFavorite = { viewModel.favorites.toggle(station.id) }
+                    onFavorite = { viewModel.favorites.toggle(station) }
                 )
             }
 
@@ -304,10 +341,56 @@ private fun SectionTitle(title: String) {
     )
 }
 
+/** Carrusel de emisoras guardadas por el usuario, con acceso rápido para quitarlas. */
+@Composable
+private fun FavoritesCarousel(
+    stations: List<Station>,
+    onSelect: (Station) -> Unit,
+    onRemove: (Station) -> Unit
+) {
+    LazyRow(
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(stations, key = { "favorite_${it.id}" }) { station ->
+            Card(
+                modifier = Modifier
+                    .width(220.dp)
+                    .clickable { onSelect(station) },
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = CarbonLight)
+            ) {
+                Row(
+                    Modifier.padding(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    StationLogo(station, size = 44.dp, cornerPercent = 12)
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                        text = station.displayName,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = Color.White,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = { onRemove(station) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "Quitar de favoritos",
+                            tint = NeonMagenta,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun FeaturedCarousel(
     stations: List<Station>,
-    images: Map<String, String>,
     onSelect: (Station) -> Unit
 ) {
     val context = LocalContext.current
@@ -327,7 +410,7 @@ private fun FeaturedCarousel(
                 Box(Modifier.fillMaxSize()) {
                     AsyncImage(
                         model = ImageRequest.Builder(context)
-                            .data(images[station.id] ?: station.favicon)
+                            .data(station.favicon)
                             .crossfade(true)
                             .build(),
                         contentDescription = null,
@@ -347,12 +430,7 @@ private fun FeaturedCarousel(
                             .padding(12.dp),
                         verticalAlignment = Alignment.Bottom
                     ) {
-                        StationLogo(
-                            station,
-                            size = 48.dp,
-                            cornerPercent = 12,
-                            customImage = images[station.id]
-                        )
+                        StationLogo(station, size = 48.dp, cornerPercent = 12)
                         Spacer(Modifier.width(10.dp))
                         Text(
                             text = station.displayName,
@@ -376,14 +454,34 @@ private fun FeaturedCarousel(
 }
 
 @Composable
-private fun CategoryPills(selected: Category, onSelect: (Category) -> Unit) {
+private fun CategoryPills(
+    selected: Category,
+    onlyFavorites: Boolean,
+    hasFavorites: Boolean,
+    onFavoritesToggle: (Boolean) -> Unit,
+    onSelect: (Category) -> Unit
+) {
     LazyRow(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        item {
+            FilterChip(
+                selected = onlyFavorites,
+                enabled = hasFavorites || onlyFavorites,
+                onClick = { onFavoritesToggle(!onlyFavorites) },
+                label = { Text("♥ Favoritos") },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = NeonMagenta.copy(alpha = 0.28f),
+                    selectedLabelColor = NeonMagenta,
+                    containerColor = CarbonLight,
+                    labelColor = Color(0xFFC6C6D6)
+                )
+            )
+        }
         items(Category.entries) { category ->
             FilterChip(
-                selected = category == selected,
+                selected = category == selected && !onlyFavorites,
                 onClick = { onSelect(category) },
                 label = { Text(category.label) },
                 colors = FilterChipDefaults.filterChipColors(
@@ -429,7 +527,6 @@ private fun CityChips(cities: List<String>, query: String, onSelect: (String) ->
 @Composable
 private fun StationCard(
     station: Station,
-    customImage: String?,
     isFavorite: Boolean,
     onPlay: () -> Unit,
     onFavorite: () -> Unit
@@ -443,12 +540,7 @@ private fun StationCard(
         colors = CardDefaults.cardColors(containerColor = Carbon)
     ) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            StationLogo(
-                station = station,
-                size = 58.dp,
-                cornerPercent = 14,
-                customImage = customImage
-            )
+            StationLogo(station = station, size = 58.dp, cornerPercent = 14)
 
             Spacer(Modifier.width(12.dp))
 

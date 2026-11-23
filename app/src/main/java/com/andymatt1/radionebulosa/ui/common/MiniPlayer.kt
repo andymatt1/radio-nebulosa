@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.andymatt1.radionebulosa.data.Station
 import com.andymatt1.radionebulosa.ui.theme.CarbonLight
 import com.andymatt1.radionebulosa.ui.theme.MutedText
+import com.andymatt1.radionebulosa.ui.theme.NeonMagenta
 import com.andymatt1.radionebulosa.ui.theme.NeonViolet
 
 /** Mini-reproductor flotante que aparece al seleccionar una emisora. */
@@ -33,10 +36,11 @@ import com.andymatt1.radionebulosa.ui.theme.NeonViolet
 fun MiniPlayer(
     station: Station,
     isPlaying: Boolean,
+    isFavorite: Boolean,
     onTogglePlay: () -> Unit,
+    onFavorite: () -> Unit,
     onOpen: () -> Unit,
-    modifier: Modifier = Modifier,
-    customImage: String? = null
+    modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier
@@ -52,12 +56,7 @@ fun MiniPlayer(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StationLogo(
-                station = station,
-                size = 52.dp,
-                cornerPercent = 14,
-                customImage = customImage
-            )
+            StationLogo(station = station, size = 52.dp, cornerPercent = 14)
 
             Spacer(Modifier.width(12.dp))
 
@@ -79,6 +78,15 @@ fun MiniPlayer(
                         color = MutedText
                     )
                 }
+            }
+
+            IconButton(onClick = onFavorite) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                    tint = if (isFavorite) NeonMagenta else MutedText,
+                    modifier = Modifier.size(22.dp)
+                )
             }
 
             IconButton(onClick = onTogglePlay) {

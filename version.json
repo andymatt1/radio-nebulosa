@@ -1,5 +1,5 @@
 {
-  "latestVersion": "1.1.0",
-  "apkUrl": "https://github.com/andymatt1/radio-nebulosa/releases/download/v1.1.0/radio-nebulosa-v1.1.0.apk",
-  "changelog": "v1.1.0:\n• Búsqueda corregida: ahora ignora acentos y encuentra emisoras por nombre, ciudad, género o frecuencia.\n• Botón para limpiar la búsqueda y teclado que no tapa los resultados.\n• Opción «Poner foto» en el reproductor para elegir una imagen desde tu dispositivo por emisora."
+  "latestVersion": "1.2.0",
+  "apkUrl": "https://github.com/andymatt1/radio-nebulosa/releases/download/v1.2.0/radio-nebulosa-v1.2.0.apk",
+  "changelog": "v1.2.0:\n• Se quitó la opción de foto: las emisoras vuelven a usar su logo oficial.\n• Corregido el play tras pausar: la emisora se conserva y se reanuda sin buscarla de nuevo.\n• Favoritos mejorados: botón en cada emisora, mini-reproductor y reproductor, sección «Mis favoritos» y filtro «♥ Favoritos»."
 }

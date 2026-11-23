@@ -15,7 +15,6 @@ import com.andymatt1.radionebulosa.data.FavoritesStore
 import com.andymatt1.radionebulosa.data.RadioRepository
 import com.andymatt1.radionebulosa.data.Station
 import com.andymatt1.radionebulosa.data.StationCodec
-import com.andymatt1.radionebulosa.data.StationImageStore
 import com.andymatt1.radionebulosa.player.RadioPlayerService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +26,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private val context = app.applicationContext
     val favorites = FavoritesStore(context)
-    val stationImages = StationImageStore(context)
     private val repository = RadioRepository
 
     private val _stations = MutableStateFlow<List<Station>>(emptyList())
@@ -55,6 +53,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val volume: StateFlow<Float> = _volume.asStateFlow()
 
     private var pendingStation: Station? = null
+    private var pendingResume = false
 
     private val playerListener = object : Player.Listener {
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -94,30 +93,83 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun play(station: Station) {
         _currentStation.value = station
         favorites.saveLastStation(station)
+        pendingResume = false
         val controller = _controller.value
         if (controller == null) {
             pendingStation = station
+            connectToPlayer()
+            return
+        }
+        // Si la emisora ya está cargada, solo reanudar: no reiniciar el stream.
+        if (controller.currentMediaItem?.mediaId == station.id &&
+            controller.playbackState != Player.STATE_IDLE
+        ) {
+            controller.play()
+            syncPlayerState()
             return
         }
         controller.setMediaItem(mediaItemFor(station))
         controller.prepare()
         controller.play()
+        syncPlayerState()
     }
 
     fun togglePlayPause() {
-        val controller = _controller.value ?: return
-        if (controller.isPlaying) controller.pause() else controller.play()
+        val controller = _controller.value
+        if (controller == null) {
+            // El controlador se está reconectando: recordamos la intención.
+            pendingResume = true
+            connectToPlayer()
+            return
+        }
+        if (controller.isPlaying) controller.pause() else startPlayback(controller)
+        syncPlayerState()
     }
 
+    /** Reanuda el stream actual sin volver a buscar la emisora. */
+    private fun startPlayback(controller: MediaController) {
+        val item = controller.currentMediaItem
+        if (item != null) {
+            if (controller.playbackState == Player.STATE_IDLE) controller.prepare()
+            controller.play()
+            return
+        }
+        val station = _currentStation.value ?: favorites.loadLastStation()
+        if (station != null) {
+            play(station)
+        } else {
+            connectToPlayer()
+        }
+    }
+
+    /** Fuerza una recarga del stream (por si la emisora se quedó colgada). */
     fun reconnect() {
-        val controller = _controller.value ?: return
-        val station = _currentStation.value
+        pendingResume = false
+        val controller = _controller.value
+        if (controller == null) {
+            connectToPlayer()
+            return
+        }
+        val station = _currentStation.value ?: favorites.loadLastStation()
         val item = controller.currentMediaItem ?: station?.let { mediaItemFor(it) }
         if (item != null) {
             controller.setMediaItem(item)
             controller.prepare()
             controller.play()
+            syncPlayerState()
         }
+    }
+
+    /** Refresca la UI con el estado real del reproductor al volver a la app. */
+    fun syncPlayerState() {
+        _controller.value?.let(::updateStateFrom)
+    }
+
+    private fun updateStateFrom(controller: MediaController) {
+        controller.currentMediaItem?.let(::syncFromMediaItem)
+        _isPlaying.value = controller.isPlaying
+        _buffering.value = controller.playbackState == Player.STATE_BUFFERING
+        _volume.value = controller.volume.coerceIn(0f, 1f)
     }
 
     fun setVolume(value: Float) {
@@ -135,12 +187,17 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 if (controller == null || _controller.value != null) return@addListener
 
                 controller.addListener(playerListener)
-                controller.volume.let { _volume.value = it.coerceIn(0f, 1f) }
                 _controller.value = controller
+                updateStateFrom(controller)
 
-                controller.currentMediaItem?.let { syncFromMediaItem(it) }
-                pendingStation?.let { play(it) }
+                val pending = pendingStation
+                val shouldResume = pendingResume
                 pendingStation = null
+                pendingResume = false
+                when {
+                    pending != null -> play(pending)
+                    shouldResume -> startPlayback(controller)
+                }
             },
             ContextCompat.getMainExecutor(context)
         )
@@ -170,6 +227,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     override fun onCleared() {
         _controller.value?.removeListener(playerListener)
         _controller.value?.release()
+        pendingStation = null
+        pendingResume = false
         super.onCleared()
     }
 }

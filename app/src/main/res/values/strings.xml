@@ -3,5 +3,5 @@
     <string name="app_name">Radio Nebulosa</string>
     <string name="welcome_message">Bienvenido a Radio Nebulosa</string>
     <string name="notification_channel">Reproducción de radio</string>
-    <string name="app_version_placeholder">1.1.0</string>
+    <string name="app_version_placeholder">1.2.0</string>
 </resources>

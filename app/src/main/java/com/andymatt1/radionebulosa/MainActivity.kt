@@ -62,5 +62,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Media3 puede reconectar al servicio mientras la app estaba en segundo
+        // plano; sincronizamos el estado real para que el botón de play no quede
+        // desactualizado tras pausar desde la notificación.
+        viewModel.syncPlayerState()
+    }
+
     private enum class Screen { SPLASH, HOME, PLAYER, SETTINGS }
 }
