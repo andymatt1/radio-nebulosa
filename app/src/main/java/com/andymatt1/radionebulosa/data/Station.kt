@@ -4,6 +4,8 @@ import android.os.Bundle
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
+import java.text.Normalizer
+import java.util.Locale
 import kotlinx.serialization.json.Json
 
 /**
@@ -45,7 +47,18 @@ data class Station(
             .take(2)
             .mapNotNull { it.firstOrNull()?.uppercaseChar()?.toString() }
             .joinToString("")
+
+    /** Todo el texto por el que se puede buscar una emisora. */
+    val searchableText: String
+        get() = listOf(displayName, cityName, state, codec, tags, streamUrl.substringBefore("?"))
+            .joinToString(" ")
 }
+
+/** Búsqueda tolerante a acentos: "bogota" encuentra "Bogotá". */
+fun String.normalizedForSearch(): String =
+    Normalizer.normalize(this, Normalizer.Form.NFD)
+        .replace(Regex("\\p{M}"), "")
+        .lowercase(Locale.ROOT)
 
 /** Serialización de la emisora dentro de los metadatos de MediaSession. */
 object StationCodec {

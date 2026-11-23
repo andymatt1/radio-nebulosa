@@ -15,6 +15,7 @@ import com.andymatt1.radionebulosa.data.FavoritesStore
 import com.andymatt1.radionebulosa.data.RadioRepository
 import com.andymatt1.radionebulosa.data.Station
 import com.andymatt1.radionebulosa.data.StationCodec
+import com.andymatt1.radionebulosa.data.StationImageStore
 import com.andymatt1.radionebulosa.player.RadioPlayerService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +27,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private val context = app.applicationContext
     val favorites = FavoritesStore(context)
+    val stationImages = StationImageStore(context)
     private val repository = RadioRepository
 
     private val _stations = MutableStateFlow<List<Station>>(emptyList())

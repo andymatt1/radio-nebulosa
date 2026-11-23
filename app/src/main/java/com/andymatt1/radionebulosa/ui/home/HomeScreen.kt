@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,8 +20,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
@@ -55,6 +58,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -63,6 +67,7 @@ import coil.request.ImageRequest
 import com.andymatt1.radionebulosa.MainViewModel
 import com.andymatt1.radionebulosa.data.Category
 import com.andymatt1.radionebulosa.data.Station
+import com.andymatt1.radionebulosa.data.normalizedForSearch
 import com.andymatt1.radionebulosa.ui.common.MiniPlayer
 import com.andymatt1.radionebulosa.ui.common.StationLogo
 import com.andymatt1.radionebulosa.ui.theme.Carbon
@@ -86,25 +91,23 @@ fun HomeScreen(
     val favorites by viewModel.favorites.favorites.collectAsState()
     val current by viewModel.currentStation.collectAsState()
     val isPlaying by viewModel.isPlaying.collectAsState()
+    val images by viewModel.stationImages.images.collectAsState()
+    val focusManager = LocalFocusManager.current
 
     var query by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf(Category.ALL) }
 
-    val filtered = remember(stations, query, category) {
+    // Se normaliza la consulta para que "bogota" encuentre "Bogotá".
+    val normalizedQuery = remember(query) { query.normalizedForSearch() }
+    val filtered = remember(stations, normalizedQuery, category) {
         stations.filter { station ->
-            category.matches(station) && (
-                query.isBlank() || listOf(
-                    station.displayName,
-                    station.cityName,
-                    station.state,
-                    *station.tagList.toTypedArray()
-                ).any { it.contains(query, ignoreCase = true) }
-                )
+            category.matches(station) &&
+                (normalizedQuery.isBlank() || station.searchableText.normalizedForSearch().contains(normalizedQuery))
         }
     }
 
     val featured = remember(stations) {
-        stations.filter { it.favicon.isNotBlank() }.take(8)
+        stations.filter { it.favicon.isNotBlank() || it.id in images }.take(8)
     }
     val cities = remember(stations) {
         stations.map { it.cityName }.distinct().take(10)
@@ -116,7 +119,8 @@ fun HomeScreen(
             HomeHeader(
                 query = query,
                 onQueryChange = { query = it },
-                onSettings = onSettings
+                onSettings = onSettings,
+                onSearchDone = { focusManager.clearFocus() }
             )
         },
         bottomBar = {
@@ -126,7 +130,8 @@ fun HomeScreen(
                         station = station,
                         isPlaying = isPlaying,
                         onTogglePlay = viewModel::togglePlayPause,
-                        onOpen = onOpenPlayer
+                        onOpen = onOpenPlayer,
+                        customImage = images[station.id]
                     )
                 }
             }
@@ -136,11 +141,12 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .imePadding()
         ) {
             if (featured.isNotEmpty()) {
                 item {
                     SectionTitle("Emisoras destacadas de Colombia")
-                    FeaturedCarousel(featured) { station ->
+                    FeaturedCarousel(featured, images) { station ->
                         viewModel.play(station)
                         onOpenPlayer()
                     }
@@ -172,6 +178,7 @@ fun HomeScreen(
             items(filtered, key = { it.id + it.streamUrl }) { station ->
                 StationCard(
                     station = station,
+                    customImage = images[station.id],
                     isFavorite = favorites.contains(station.id),
                     onPlay = {
                         viewModel.play(station)
@@ -223,7 +230,8 @@ fun HomeScreen(
 private fun HomeHeader(
     query: String,
     onQueryChange: (String) -> Unit,
-    onSettings: () -> Unit
+    onSettings: () -> Unit,
+    onSearchDone: () -> Unit
 ) {
     Surface(color = SpaceBlack) {
         Column(Modifier.padding(start = 16.dp, end = 10.dp, top = 14.dp, bottom = 10.dp)) {
@@ -258,7 +266,19 @@ private fun HomeHeader(
                 singleLine = true,
                 placeholder = { Text("Buscar emisora, ciudad o género", color = MutedText) },
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null, tint = MutedText) },
+                trailingIcon = {
+                    if (query.isNotEmpty()) {
+                        IconButton(onClick = { onQueryChange("") }) {
+                            Icon(
+                                Icons.Filled.Close,
+                                contentDescription = "Limpiar búsqueda",
+                                tint = MutedText
+                            )
+                        }
+                    }
+                },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { onSearchDone() }),
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = NeonViolet,
@@ -285,7 +305,11 @@ private fun SectionTitle(title: String) {
 }
 
 @Composable
-private fun FeaturedCarousel(stations: List<Station>, onSelect: (Station) -> Unit) {
+private fun FeaturedCarousel(
+    stations: List<Station>,
+    images: Map<String, String>,
+    onSelect: (Station) -> Unit
+) {
     val context = LocalContext.current
     LazyRow(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
@@ -303,7 +327,7 @@ private fun FeaturedCarousel(stations: List<Station>, onSelect: (Station) -> Uni
                 Box(Modifier.fillMaxSize()) {
                     AsyncImage(
                         model = ImageRequest.Builder(context)
-                            .data(station.favicon)
+                            .data(images[station.id] ?: station.favicon)
                             .crossfade(true)
                             .build(),
                         contentDescription = null,
@@ -323,7 +347,12 @@ private fun FeaturedCarousel(stations: List<Station>, onSelect: (Station) -> Uni
                             .padding(12.dp),
                         verticalAlignment = Alignment.Bottom
                     ) {
-                        StationLogo(station, size = 48.dp, cornerPercent = 12)
+                        StationLogo(
+                            station,
+                            size = 48.dp,
+                            cornerPercent = 12,
+                            customImage = images[station.id]
+                        )
                         Spacer(Modifier.width(10.dp))
                         Text(
                             text = station.displayName,
@@ -378,16 +407,17 @@ private fun CityChips(cities: List<String>, query: String, onSelect: (String) ->
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         cities.forEach { city ->
+            val isSelected = city.normalizedForSearch() == query.normalizedForSearch()
             Surface(
                 shape = RoundedCornerShape(20.dp),
-                color = if (city.equals(query, ignoreCase = true)) NeonViolet.copy(alpha = 0.3f) else CarbonLight,
+                color = if (isSelected) NeonViolet.copy(alpha = 0.3f) else CarbonLight,
                 modifier = Modifier.clickable {
-                    onSelect(if (city.equals(query, ignoreCase = true)) "" else city)
+                    onSelect(if (isSelected) "" else city)
                 }
             ) {
                 Text(
                     text = city,
-                    color = if (city.equals(query, ignoreCase = true)) NeonCyan else Color(0xFFC6C6D6),
+                    color = if (isSelected) NeonCyan else Color(0xFFC6C6D6),
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
                 )
@@ -399,6 +429,7 @@ private fun CityChips(cities: List<String>, query: String, onSelect: (String) ->
 @Composable
 private fun StationCard(
     station: Station,
+    customImage: String?,
     isFavorite: Boolean,
     onPlay: () -> Unit,
     onFavorite: () -> Unit
@@ -412,7 +443,12 @@ private fun StationCard(
         colors = CardDefaults.cardColors(containerColor = Carbon)
     ) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            StationLogo(station = station, size = 58.dp, cornerPercent = 14)
+            StationLogo(
+                station = station,
+                size = 58.dp,
+                cornerPercent = 14,
+                customImage = customImage
+            )
 
             Spacer(Modifier.width(12.dp))
 

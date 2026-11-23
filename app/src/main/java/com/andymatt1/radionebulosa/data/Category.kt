@@ -1,7 +1,5 @@
 package com.andymatt1.radionebulosa.data
 
-import java.util.Locale
-
 /** Filtros rápidos estilo "Sección Radio" de Claro Música. */
 enum class Category(val label: String, private val keywords: List<String>) {
     ALL("Todas", emptyList()),
@@ -16,7 +14,7 @@ enum class Category(val label: String, private val keywords: List<String>) {
 
     fun matches(station: Station): Boolean {
         if (this == ALL) return true
-        val text = (station.tagList + station.displayName).joinToString(" ").lowercase(Locale.ROOT)
+        val text = (station.tagList + station.displayName).joinToString(" ").normalizedForSearch()
         return keywords.any { text.contains(it) }
     }
 }

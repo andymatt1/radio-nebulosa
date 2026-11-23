@@ -31,7 +31,8 @@ fun StationLogo(
     station: Station,
     size: Dp,
     cornerPercent: Int = 18,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    customImage: String? = null
 ) {
     val context = LocalContext.current
 
@@ -55,11 +56,12 @@ fun StationLogo(
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
         )
 
-        val favicon = station.favicon
-        if (favicon.isNotBlank()) {
+        // La foto elegida por el usuario tiene prioridad sobre el favicon.
+        val image = customImage?.takeIf { it.isNotBlank() } ?: station.favicon
+        if (image.isNotBlank()) {
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data(favicon)
+                    .data(image)
                     .crossfade(true)
                     .build(),
                 contentDescription = station.displayName,

@@ -35,7 +35,8 @@ fun MiniPlayer(
     isPlaying: Boolean,
     onTogglePlay: () -> Unit,
     onOpen: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    customImage: String? = null
 ) {
     Surface(
         modifier = modifier
@@ -51,7 +52,12 @@ fun MiniPlayer(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StationLogo(station = station, size = 52.dp, cornerPercent = 14)
+            StationLogo(
+                station = station,
+                size = 52.dp,
+                cornerPercent = 14,
+                customImage = customImage
+            )
 
             Spacer(Modifier.width(12.dp))
 
