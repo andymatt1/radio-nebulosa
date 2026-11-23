@@ -1,0 +1,5 @@
+{
+  "latestVersion": "1.0.0",
+  "apkUrl": "https://github.com/andymatt1/radio-nebulosa/releases/download/v1.0.0/radio-nebulosa-v1.0.0.apk",
+  "changelog": "Versión inicial de Radio Nebulosa:\n• Catálogo de emisoras colombianas desde Radio Browser.\n• Reproductor con estado en segundo plano y controles multimedia.\n• Categorías, búsqueda y favoritos."
+}

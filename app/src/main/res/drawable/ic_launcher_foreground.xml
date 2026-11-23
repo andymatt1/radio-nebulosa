@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Planeta violeta -->
+    <path
+        android:fillColor="#B06CFF"
+        android:pathData="M54,32a22,22 0 1,0 0,44a22,22 0 1,0 0,-44z" />
+    <!-- Anillo cian -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M25,67c10,10 48,10 58,0"
+        android:strokeColor="#3DE1E1"
+        android:strokeWidth="4" />
+    <!-- Estrella magenta -->
+    <path
+        android:fillColor="#FF4FB8"
+        android:pathData="M80,26a4,4 0 1,0 0,8a4,4 0 1,0 0,-8z" />
+</vector>
