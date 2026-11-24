@@ -4,7 +4,7 @@ Aplicación Android nativa (Kotlin + Jetpack Compose) dedicada **exclusivamente 
 
 ## Características
 
-- **Splash animado:** robot cósmico que se enciende y muestra *"Bienvenido a Radio Nebulosa"*, con botón **Saltar**.
+- **Splash animado:** robot tipo chatbot IA redibujado en Compose y adaptado al estilo cósmico de Radio Nebulosa (violeta, cian y magenta, burbuja de chat y ecualizador de radio). Muestra *"Bienvenido a Radio Nebulosa"* con botón **Saltar**.
 - **Catálogo 100 % Colombia:** consulta `countrycode=CO` a Radio Browser API con respaldo entre 4 espejos. Trae nombre, logo (`favicon`), ciudad, géneros (`tags`) y URL de stream (`url_resolved`).
 - **Interfaz estilo sección Radio de Claro Música:** encabezado con buscador instantáneo y ajustes, carrusel de destacadas, píldoras de géneros, filtro por ciudades y listado de emisoras.
 - **Logo siempre impecable:** si la emisora no tiene logo o falla la carga, se muestra una tarjeta cósmica con sus iniciales.
