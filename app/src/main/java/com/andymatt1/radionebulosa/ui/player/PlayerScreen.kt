@@ -106,11 +106,12 @@ fun PlayerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
     val current = station!!
 
     Box(Modifier.fillMaxSize().background(SpaceBlack)) {
-        // Fondo dinámico y difuminado a partir del logo oficial.
-        if (current.favicon.isNotBlank()) {
+        // Fondo dinámico y difuminado a partir del logo disponible.
+        val backdropUrl = current.logoUrls.firstOrNull()
+        if (backdropUrl != null) {
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data(current.favicon)
+                    .data(backdropUrl)
                     .crossfade(true)
                     .build(),
                 contentDescription = null,

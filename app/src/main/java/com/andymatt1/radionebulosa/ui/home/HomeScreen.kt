@@ -120,7 +120,7 @@ fun HomeScreen(
     }
 
     val featured = remember(stations) {
-        stations.filter { it.favicon.isNotBlank() }.take(8)
+        stations.filter { it.logoUrls.isNotEmpty() }.take(8)
     }
     val cities = remember(stations) {
         stations.map { it.cityName }.distinct().take(10)
@@ -408,15 +408,17 @@ private fun FeaturedCarousel(
                 colors = CardDefaults.cardColors(containerColor = CarbonLight)
             ) {
                 Box(Modifier.fillMaxSize()) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(station.favicon)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize().alpha(0.38f)
-                    )
+                    station.logoUrls.firstOrNull()?.let { logoUrl ->
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data(logoUrl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize().alpha(0.38f)
+                        )
+                    }
                     Box(
                         Modifier.fillMaxSize().background(
                             Brush.verticalGradient(

@@ -4,6 +4,7 @@ import android.os.Bundle
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
+import java.net.URL
 import java.text.Normalizer
 import java.util.Locale
 import kotlinx.serialization.json.Json
@@ -19,6 +20,7 @@ data class Station(
     @SerialName("url_resolved") val urlResolved: String = "",
     val url: String = "",
     val favicon: String = "",
+    val homepage: String = "",
     val country: String = "",
     val state: String = "",
     val tags: String = "",
@@ -47,6 +49,46 @@ data class Station(
             .take(2)
             .mapNotNull { it.firstOrNull()?.uppercaseChar()?.toString() }
             .joinToString("")
+
+    /**
+     * Candidatos de logo en orden de preferencia. Radio Browser deja el
+     * favicon vacío (o con el texto "null") en muchas emisoras colombianas;
+     * en ese caso se deriva un icono del dominio de su página oficial usando
+     * el servicio de DuckDuckGo, que no rastrea al usuario. Como último
+     * recurso se prueba el host del stream.
+     */
+    val logoUrls: List<String>
+        get() = buildList {
+            cleanUrl(favicon)?.let(::add)
+            homepageHost()?.let { add(iconServiceUrl(it)) }
+            streamHost()?.let { add(iconServiceUrl(it)) }
+        }.distinct()
+
+    private fun homepageHost(): String? = cleanUrl(homepage)?.let(::hostOf)
+
+    private fun streamHost(): String? = cleanUrl(streamUrl)?.let(::hostOf)
+
+    private fun iconServiceUrl(host: String): String =
+        "https://icons.duckduckgo.com/ip3/$host.ico"
+
+    private fun cleanUrl(raw: String): String? {
+        val value = raw.trim()
+        if (value.isBlank() || value.equals("null", true) || value.equals("none", true)) {
+            return null
+        }
+        val candidate = when {
+            value.startsWith("http://", true) || value.startsWith("https://", true) -> value
+            value.startsWith("//") -> "https:$value"
+            else -> "https://$value"
+        }
+        return runCatching { URL(candidate).toString() }.getOrNull()
+    }
+
+    private fun hostOf(url: String): String? =
+        runCatching { URL(url).host }
+            .getOrNull()
+            ?.removePrefix("www.")
+            ?.takeIf { it.isNotBlank() && !it.contains(' ') }
 
     /** Todo el texto por el que se puede buscar una emisora. */
     val searchableText: String

@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "com.andymatt1.radionebulosa"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.andymatt1.radionebulosa"
         minSdk = 23
-        targetSdk = 35
-        versionCode = 4
-        versionName = "1.3.0"
+        targetSdk = 36
+        versionCode = 5
+        versionName = "1.4.0"
 
         vectorDrawables {
             useSupportLibrary = true

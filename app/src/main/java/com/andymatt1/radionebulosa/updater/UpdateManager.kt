@@ -20,10 +20,13 @@ import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.security.MessageDigest
+import java.util.concurrent.TimeUnit
 
 /**
- * Consulta `version.json`, descarga el APK con progreso y lanza el instalador
- * del sistema. Tras la instalación, PackageReplacedReceiver reabre la app.
+ * Consulta `version.json`, descarga el APK con progreso, verifica su hash y
+ * lanza el instalador del sistema. Tras la instalación, PackageReplacedReceiver
+ * reabre la app.
  */
 object UpdateManager {
 
@@ -38,12 +41,17 @@ object UpdateManager {
 
     private const val VERSION_URL =
         "https://raw.githubusercontent.com/andymatt1/radio-nebulosa/main/version.json"
+    private const val USER_AGENT = "RadioNebulosa/1.4.0 (Android)"
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    private val client = OkHttpClient.Builder().build()
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .callTimeout(120, TimeUnit.SECONDS)
+        .build()
     private val json = Json { ignoreUnknownKeys = true }
 
     fun checkForUpdates(context: Context) {
@@ -53,7 +61,11 @@ object UpdateManager {
             val result = withContext(Dispatchers.IO) { runCatching { fetchInfo() } }
 
             result.onSuccess { info ->
-                val available = isNewer(info.latestVersion, currentVersion(context))
+                val available = if (info.latestVersionCode > 0) {
+                    info.latestVersionCode > currentVersionCode(context)
+                } else {
+                    isNewer(info.latestVersion, currentVersion(context))
+                }
                 _state.value = UiState(
                     info = info,
                     updateAvailable = available,
@@ -83,14 +95,18 @@ object UpdateManager {
             )
 
             val result = withContext(Dispatchers.IO) {
-                runCatching { downloadApk(context, info.apkUrl) }
+                runCatching {
+                    val downloaded = downloadApk(context, info.apkUrl)
+                    verifyChecksum(downloaded, info.sha256)
+                    downloaded
+                }
             }
 
             result.onSuccess { file ->
                 _state.value = _state.value.copy(
                     isDownloading = false,
                     progress = 1f,
-                    message = "Descarga completada. Instalando…"
+                    message = "Descarga verificada. Instalando…"
                 )
                 installApk(context, file)
             }.onFailure { error ->
@@ -105,7 +121,7 @@ object UpdateManager {
     private fun fetchInfo(): UpdateInfo {
         val request = Request.Builder()
             .url(VERSION_URL)
-            .header("User-Agent", "RadioNebulosa/1.0 (Android)")
+            .header("User-Agent", USER_AGENT)
             .build()
 
         client.newCall(request).execute().use { response ->
@@ -121,7 +137,11 @@ object UpdateManager {
         val outputFile = File(directory, "radio-nebulosa-update.apk")
         if (outputFile.exists()) outputFile.delete()
 
-        val request = Request.Builder().url(url).build()
+        val request = Request.Builder()
+            .url(url)
+            .header("User-Agent", USER_AGENT)
+            .build()
+
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
             val body = response.body ?: throw IOException("Respuesta vacía")
@@ -146,6 +166,21 @@ object UpdateManager {
             }
         }
         return outputFile
+    }
+
+    /** Evita instalar un APK modificado durante la descarga. */
+    private fun verifyChecksum(file: File, expected: String) {
+        val hash = expected.trim().lowercase()
+        if (hash.isBlank()) return
+
+        val actual = MessageDigest.getInstance("SHA-256")
+            .digest(file.readBytes())
+            .joinToString("") { "%02x".format(it) }
+
+        if (actual != hash) {
+            file.delete()
+            throw IOException("El APK descargado no coincide con la versión publicada")
+        }
     }
 
     private fun installApk(context: Context, file: File) {
@@ -182,6 +217,12 @@ object UpdateManager {
         runCatching {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName
         }.getOrNull() ?: "0.0.0"
+
+    private fun currentVersionCode(context: Context): Int =
+        runCatching {
+            @Suppress("DEPRECATION")
+            context.packageManager.getPackageInfo(context.packageName, 0).versionCode
+        }.getOrDefault(0)
 
     /** Comparador semántico simple: 1.10.0 > 1.9.0. */
     private fun isNewer(candidate: String, current: String): Boolean {

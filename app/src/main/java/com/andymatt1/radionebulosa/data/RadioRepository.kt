@@ -38,7 +38,7 @@ object RadioRepository {
 
             val request = Request.Builder()
                 .url(url)
-                .header("User-Agent", "RadioNebulosa/1.0 (Android)")
+                .header("User-Agent", "RadioNebulosa/1.4.0 (Android)")
                 .build()
 
             try {

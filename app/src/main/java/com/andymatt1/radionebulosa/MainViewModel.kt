@@ -204,7 +204,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun mediaItemFor(station: Station): MediaItem {
-        val artwork = station.favicon.takeIf { it.isNotBlank() }?.let(Uri::parse)
+        val artwork = station.logoUrls.firstOrNull()?.let(Uri::parse)
         val metadata = MediaMetadata.Builder()
             .setTitle(station.displayName)
             .setArtist(station.cityName)
