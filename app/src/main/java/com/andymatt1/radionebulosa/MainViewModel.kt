@@ -11,6 +11,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import com.andymatt1.radionebulosa.data.CatalogStore
 import com.andymatt1.radionebulosa.data.FavoritesStore
 import com.andymatt1.radionebulosa.data.RadioRepository
 import com.andymatt1.radionebulosa.data.Station
@@ -26,6 +27,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private val context = app.applicationContext
     val favorites = FavoritesStore(context)
+    private val catalogStore = CatalogStore(context)
     private val repository = RadioRepository
 
     private val _stations = MutableStateFlow<List<Station>>(emptyList())
@@ -33,6 +35,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
+
+    private val _refreshing = MutableStateFlow(false)
+    val refreshing: StateFlow<Boolean> = _refreshing.asStateFlow()
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
@@ -71,22 +76,50 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     init {
         connectToPlayer()
-        loadStations()
+        restoreCatalog()
+    }
+
+    /** Muestra el catálogo guardado de inmediato y actualiza solo si hace falta. */
+    private fun restoreCatalog() {
+        val cached = catalogStore.load()
+        if (cached == null) {
+            _loading.value = true
+            loadStations()
+            return
+        }
+
+        _stations.value = cached.stations
+        _loading.value = false
+        if (!catalogStore.isFresh(cached)) {
+            _refreshing.value = true
+            loadStations()
+        }
     }
 
     fun loadStations() {
         viewModelScope.launch {
-            _loading.value = true
+            val hadStations = _stations.value.isNotEmpty()
+            _loading.value = !hadStations
+            _refreshing.value = hadStations
             _error.value = null
+
             runCatching { repository.fetchColombianStations() }
-                .onSuccess { _stations.value = it }
+                .onSuccess { fresh ->
+                    _stations.value = fresh
+                    catalogStore.save(fresh)
+                }
                 .onFailure { e ->
-                    _error.value = when (e) {
-                        is java.io.IOException -> "Sin conexión. Revisa tu internet e inténtalo de nuevo."
-                        else -> "No se pudo cargar el catálogo: ${e.message ?: "error desconocido"}"
+                    // Si ya hay caché, el error no bloquea la interfaz.
+                    if (_stations.value.isEmpty()) {
+                        _error.value = when (e) {
+                            is java.io.IOException -> "Sin conexión. Revisa tu internet e inténtalo de nuevo."
+                            else -> "No se pudo cargar el catálogo: ${e.message ?: "error desconocido"}"
+                        }
                     }
                 }
+
             _loading.value = false
+            _refreshing.value = false
         }
     }
 

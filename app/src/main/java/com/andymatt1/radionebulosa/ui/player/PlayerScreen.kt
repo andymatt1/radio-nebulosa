@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,11 +48,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.andymatt1.radionebulosa.MainViewModel
+import com.andymatt1.radionebulosa.R
 import com.andymatt1.radionebulosa.ui.common.StationLogo
 import com.andymatt1.radionebulosa.ui.theme.MutedText
 import com.andymatt1.radionebulosa.ui.theme.NeonCyan
@@ -106,7 +109,14 @@ fun PlayerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
     val current = station!!
 
     Box(Modifier.fillMaxSize().background(SpaceBlack)) {
-        // Fondo dinámico y difuminado a partir del logo disponible.
+        // Fondo nebuloso místico compartido con el catálogo.
+        Image(
+            painter = painterResource(R.drawable.nebulosa_mist),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize().blur(42.dp).alpha(0.45f)
+        )
+        // Capa adicional con el logo de la emisora cuando está disponible.
         val backdropUrl = current.logoUrls.firstOrNull()
         if (backdropUrl != null) {
             AsyncImage(
@@ -116,13 +126,13 @@ fun PlayerScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize().blur(56.dp).alpha(0.38f)
+                modifier = Modifier.fillMaxSize().blur(56.dp).alpha(0.22f)
             )
         }
         Box(
             Modifier.fillMaxSize().background(
                 Brush.verticalGradient(
-                    listOf(Color(0xB3050508), SpaceBlack)
+                    listOf(Color(0xCC07031A), SpaceBlack)
                 )
             )
         )

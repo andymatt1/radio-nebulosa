@@ -1,11 +1,14 @@
 package com.andymatt1.radionebulosa.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -27,16 +31,17 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -53,18 +58,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.andymatt1.radionebulosa.MainViewModel
+import com.andymatt1.radionebulosa.R
 import com.andymatt1.radionebulosa.data.Category
 import com.andymatt1.radionebulosa.data.Station
 import com.andymatt1.radionebulosa.data.normalizedForSearch
@@ -78,7 +86,10 @@ import com.andymatt1.radionebulosa.ui.theme.NeonMagenta
 import com.andymatt1.radionebulosa.ui.theme.NeonViolet
 import com.andymatt1.radionebulosa.ui.theme.SpaceBlack
 
-/** Catálogo completo: buscador, destacados, categorías, ciudades y emisoras. */
+/**
+ * Catálogo con estética de plataforma de TV: cabecera con pestañas, banner
+ * protagonista, carrusel de canales en vivo y guía completa de emisoras.
+ */
 @Composable
 fun HomeScreen(
     viewModel: MainViewModel,
@@ -87,6 +98,7 @@ fun HomeScreen(
 ) {
     val stations by viewModel.stations.collectAsState()
     val loading by viewModel.loading.collectAsState()
+    val refreshing by viewModel.refreshing.collectAsState()
     val error by viewModel.error.collectAsState()
     val favorites by viewModel.favorites.favorites.collectAsState()
     val current by viewModel.currentStation.collectAsState()
@@ -98,18 +110,21 @@ fun HomeScreen(
     var category by rememberSaveable { mutableStateOf(Category.ALL) }
     var onlyFavorites by rememberSaveable { mutableStateOf(false) }
 
-    // Se normaliza la consulta para que "bogota" encuentre "Bogotá".
     val normalizedQuery = remember(query) { query.normalizedForSearch() }
-    val filtered = remember(stations, normalizedQuery, category, onlyFavorites, favorites) {
+
+    // El índice se calcula una sola vez por catálogo, no en cada pulsación.
+    val searchIndex = remember(stations) {
+        stations.associateWith { it.searchableText.normalizedForSearch() }
+    }
+
+    val filtered = remember(stations, normalizedQuery, category, onlyFavorites, favorites, searchIndex) {
         stations.filter { station ->
             (!onlyFavorites || station.id in favorites) &&
                 category.matches(station) &&
-                (normalizedQuery.isBlank() || station.searchableText.normalizedForSearch().contains(normalizedQuery))
+                (normalizedQuery.isBlank() || searchIndex[station].orEmpty().contains(normalizedQuery))
         }
     }
 
-    // Los favoritos se guardan completos, pero también se hidratan los IDs
-    // antiguos que aún estén presentes en el catálogo actual.
     val favoriteList = remember(favorites, favoriteStations, stations) {
         val byId = favoriteStations.associateBy { it.id }
         val result = favoriteStations.filter { it.id in favorites }.toMutableList()
@@ -119,24 +134,33 @@ fun HomeScreen(
         result
     }
 
-    val featured = remember(stations) {
-        stations.filter { it.logoUrls.isNotEmpty() }.take(8)
-    }
-    val cities = remember(stations) {
-        stations.map { it.cityName }.distinct().take(10)
+    val channels = remember(stations) { stations.sortedByDescending { it.votes }.take(24) }
+    val cities = remember(stations) { stations.map { it.cityName }.distinct().take(12) }
+    val hero = remember(stations, favoriteList) {
+        (favoriteList + stations).firstOrNull { it.logoUrls.isNotEmpty() } ?: stations.firstOrNull()
     }
 
-    Scaffold(
-        containerColor = SpaceBlack,
-        topBar = {
-            HomeHeader(
-                query = query,
-                onQueryChange = { query = it },
-                onSettings = onSettings,
-                onSearchDone = { focusManager.clearFocus() }
+    val play: (Station) -> Unit = { station ->
+        viewModel.play(station)
+        onOpenPlayer()
+    }
+
+    Box(Modifier.fillMaxSize().background(SpaceBlack)) {
+        Image(
+            painter = painterResource(R.drawable.nebulosa_mist),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize().blur(36.dp).alpha(0.22f)
+        )
+        Box(
+            Modifier.fillMaxSize().background(
+                Brush.verticalGradient(listOf(Color(0x2A2A0B45), SpaceBlack))
             )
-        },
-        bottomBar = {
+        )
+
+        Scaffold(
+            containerColor = Color.Transparent,
+            bottomBar = {
             current?.let { station ->
                 Box(Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
                     MiniPlayer(
@@ -157,72 +181,36 @@ fun HomeScreen(
                 .padding(padding)
                 .imePadding()
         ) {
-            if (favoriteList.isNotEmpty()) {
+            item {
+                TvHeader(
+                    query = query,
+                    onQueryChange = { query = it },
+                    onlyFavorites = onlyFavorites,
+                    onFavoritesChange = { onlyFavorites = it },
+                    onSettings = onSettings,
+                    onSearchDone = { focusManager.clearFocus() }
+                )
+            }
+
+            if (refreshing) {
                 item {
-                    SectionTitle("Mis favoritos (${favoriteList.size})")
-                    FavoritesCarousel(
-                        stations = favoriteList,
-                        onSelect = { station ->
-                            viewModel.play(station)
-                            onOpenPlayer()
-                        },
-                        onRemove = { station -> viewModel.favorites.toggle(station) }
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth().height(2.dp),
+                        color = NeonCyan,
+                        trackColor = Color.Transparent
                     )
                 }
             }
 
-            if (featured.isNotEmpty()) {
+            if (hero != null) {
                 item {
-                    SectionTitle("Emisoras destacadas de Colombia")
-                    FeaturedCarousel(featured) { station ->
-                        viewModel.play(station)
-                        onOpenPlayer()
-                    }
+                    HeroBanner(
+                        station = hero,
+                        isFavorite = favorites.contains(hero.id),
+                        onPlay = { play(hero) },
+                        onFavorite = { viewModel.favorites.toggle(hero) }
+                    )
                 }
-            }
-
-            item {
-                SectionTitle("Explora por género y favoritos")
-                CategoryPills(
-                    selected = category,
-                    onlyFavorites = onlyFavorites,
-                    hasFavorites = favorites.isNotEmpty(),
-                    onFavoritesToggle = { favoritesSelected ->
-                        onlyFavorites = favoritesSelected
-                    },
-                    onSelect = { selectedCategory ->
-                        category = selectedCategory
-                    }
-                )
-            }
-
-            if (cities.isNotEmpty()) {
-                item {
-                    SectionTitle("Ciudades")
-                    CityChips(cities, query) { query = it }
-                }
-            }
-
-            item {
-                SectionTitle(
-                    when {
-                        onlyFavorites -> "Emisoras favoritas (${filtered.size})"
-                        category == Category.ALL && query.isBlank() -> "Todas las emisoras (${filtered.size})"
-                        else -> "Resultados (${filtered.size})"
-                    }
-                )
-            }
-
-            items(filtered, key = { it.id + it.streamUrl }) { station ->
-                StationCard(
-                    station = station,
-                    isFavorite = favorites.contains(station.id),
-                    onPlay = {
-                        viewModel.play(station)
-                        onOpenPlayer()
-                    },
-                    onFavorite = { viewModel.favorites.toggle(station) }
-                )
             }
 
             if (loading) {
@@ -236,7 +224,7 @@ fun HomeScreen(
                 }
             }
 
-            if (error != null) {
+            if (error != null && stations.isEmpty()) {
                 item {
                     Card(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -258,198 +246,413 @@ fun HomeScreen(
                 }
             }
 
-            item { Spacer(Modifier.height(20.dp)) }
+            if (favoriteList.isNotEmpty()) {
+                item {
+                    TvSectionTitle("Mi lista (${favoriteList.size})")
+                    FavoriteRail(
+                        stations = favoriteList,
+                        onPlay = play,
+                        onFavorite = viewModel.favorites::toggle
+                    )
+                }
+            }
+
+            if (channels.isNotEmpty()) {
+                item {
+                    TvSectionTitle("Canales en vivo")
+                    ChannelRail(channels = channels, onPlay = play)
+                }
+            }
+
+            item {
+                TvSectionTitle("Explora por género")
+                CategoryPills(
+                    selected = category,
+                    onlyFavorites = onlyFavorites,
+                    hasFavorites = favorites.isNotEmpty(),
+                    onFavoritesToggle = { onlyFavorites = it },
+                    onSelect = { category = it }
+                )
+            }
+
+            if (cities.isNotEmpty()) {
+                item {
+                    TvSectionTitle("Ciudades")
+                    CityChips(cities = cities, query = query) { query = it }
+                }
+            }
+
+            item {
+                TvSectionTitle(
+                    when {
+                        onlyFavorites -> "Mis favoritas (${filtered.size})"
+                        category == Category.ALL && query.isBlank() -> "Todas las emisoras (${filtered.size})"
+                        else -> "Resultados (${filtered.size})"
+                    }
+                )
+            }
+
+            if (filtered.isEmpty() && !loading && error == null) {
+                item {
+                    Text(
+                        text = "No hay emisoras con esos filtros. Prueba otra ciudad o género.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MutedText,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 18.dp)
+                    )
+                }
+            }
+
+            itemsIndexed(filtered, key = { _, station -> station.id + station.streamUrl }) { index, station ->
+                TvStationRow(
+                    number = index + 1,
+                    station = station,
+                    isFavorite = favorites.contains(station.id),
+                    onPlay = { play(station) },
+                    onFavorite = { viewModel.favorites.toggle(station) }
+                )
+            }
+
+            item { Spacer(Modifier.height(24.dp)) }
+        }
         }
     }
 }
 
 @Composable
-private fun HomeHeader(
+private fun TvHeader(
     query: String,
     onQueryChange: (String) -> Unit,
+    onlyFavorites: Boolean,
+    onFavoritesChange: (Boolean) -> Unit,
     onSettings: () -> Unit,
     onSearchDone: () -> Unit
 ) {
-    Surface(color = SpaceBlack) {
-        Column(Modifier.padding(start = 16.dp, end = 10.dp, top = 14.dp, bottom = 10.dp)) {
+    var searchOpen by rememberSaveable { mutableStateOf(query.isNotBlank()) }
+
+    Surface(color = Color(0xFF07070D)) {
+        Column(Modifier.padding(start = 16.dp, end = 10.dp, top = 16.dp, bottom = 8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
+                        .size(40.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Brush.linearGradient(listOf(NeonViolet, NeonCyan))),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("RN", color = Color.White, style = MaterialTheme.typography.labelMedium)
+                    Text("RN", color = Color.White, style = MaterialTheme.typography.titleMedium)
                 }
                 Spacer(Modifier.width(10.dp))
-                Text(
-                    text = "Radio Nebulosa",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White,
-                    modifier = Modifier.weight(1f)
-                )
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        text = "NEBULOSA MOD",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = NeonCyan
+                    )
+                    Text(
+                        text = "En vivo • Colombia",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White
+                    )
+                }
+                IconButton(onClick = { searchOpen = !searchOpen }) {
+                    Icon(Icons.Filled.Search, contentDescription = "Buscar", tint = Color.White)
+                }
                 IconButton(onClick = onSettings) {
-                    Icon(Icons.Filled.Settings, contentDescription = "Ajustes", tint = NeonViolet)
+                    Icon(Icons.Filled.Settings, contentDescription = "Ajustes", tint = MutedText)
                 }
             }
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(12.dp))
 
-            OutlinedTextField(
-                value = query,
-                onValueChange = onQueryChange,
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                placeholder = { Text("Buscar emisora, ciudad o género", color = MutedText) },
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null, tint = MutedText) },
-                trailingIcon = {
-                    if (query.isNotEmpty()) {
-                        IconButton(onClick = { onQueryChange("") }) {
-                            Icon(
-                                Icons.Filled.Close,
-                                contentDescription = "Limpiar búsqueda",
-                                tint = MutedText
-                            )
+            Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                TvTab(label = "Inicio", selected = !onlyFavorites) { onFavoritesChange(false) }
+                TvTab(label = "Mi lista", selected = onlyFavorites) { onFavoritesChange(true) }
+            }
+
+            if (searchOpen) {
+                Spacer(Modifier.height(12.dp))
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = onQueryChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    placeholder = { Text("Buscar emisora, ciudad o género", color = MutedText) },
+                    leadingIcon = {
+                        Icon(Icons.Filled.Search, contentDescription = null, tint = MutedText)
+                    },
+                    trailingIcon = {
+                        if (query.isNotEmpty()) {
+                            IconButton(onClick = { onQueryChange("") }) {
+                                Icon(
+                                    Icons.Filled.Close,
+                                    contentDescription = "Limpiar búsqueda",
+                                    tint = MutedText
+                                )
+                            }
                         }
-                    }
-                },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { onSearchDone() }),
-                shape = RoundedCornerShape(14.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = NeonViolet,
-                    unfocusedBorderColor = Color(0xFF2C2C3A),
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    cursorColor = NeonCyan,
-                    focusedContainerColor = Carbon,
-                    unfocusedContainerColor = Carbon
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = { onSearchDone() }),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = NeonViolet,
+                        unfocusedBorderColor = Color(0xFF2C2C3A),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = NeonCyan,
+                        focusedContainerColor = Carbon,
+                        unfocusedContainerColor = Carbon
+                    )
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TvTab(label: String, selected: Boolean, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable(onClick = onClick)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleMedium,
+            color = if (selected) Color.White else MutedText
+        )
+        Spacer(Modifier.height(6.dp))
+        Box(
+            Modifier
+                .width(if (selected) 28.dp else 0.dp)
+                .height(2.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(NeonCyan)
+        )
+    }
+}
+
+@Composable
+private fun TvSectionTitle(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        color = Color.White,
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 10.dp)
+    )
+}
+
+@Composable
+private fun HeroBanner(
+    station: Station,
+    isFavorite: Boolean,
+    onPlay: () -> Unit,
+    onFavorite: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxWidth()
+            .height(228.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(Brush.linearGradient(listOf(NeonViolet, NeonCyan)))
+            .clickable(onClick = onPlay)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.nebulosa_mist),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize().blur(12.dp).alpha(0.85f)
+        )
+        Box(
+            Modifier.fillMaxSize().background(
+                Brush.verticalGradient(
+                    listOf(Color(0x99050508), Color(0xF0050508))
+                )
+            )
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(18.dp)
+        ) {
+            StationLogo(station = station, size = 44.dp, cornerPercent = 12)
+            Spacer(Modifier.height(10.dp))
+            Surface(shape = RoundedCornerShape(20.dp), color = Color(0x33FFFFFF)) {
+                Text(
+                    text = "● EN VIVO",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = NeonCyan,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = station.displayName,
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = listOf(station.cityName)
+                    .plus(station.tagList.take(2))
+                    .filter { it.isNotBlank() }
+                    .joinToString(" • ")
+                    .ifBlank { "Radio en vivo" },
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(0xFFD8D8E6),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(Modifier.height(14.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Button(
+                    onClick = onPlay,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = SpaceBlack
+                    )
+                ) {
+                    Icon(Icons.Filled.PlayArrow, contentDescription = null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("Reproducir")
+                }
+                Spacer(Modifier.width(8.dp))
+                IconButton(onClick = onFavorite) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                        tint = if (isFavorite) NeonMagenta else Color.White
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ChannelRail(channels: List<Station>, onPlay: (Station) -> Unit) {
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        itemsIndexed(channels, key = { _, station -> "channel_${station.id}" }) { index, station ->
+            TvChannelCard(
+                channelNumber = index + 1,
+                station = station,
+                isFavorite = false,
+                onPlay = { onPlay(station) },
+                onFavorite = null
             )
         }
     }
 }
 
 @Composable
-private fun SectionTitle(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleLarge,
-        color = Color.White,
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 10.dp)
-    )
-}
-
-/** Carrusel de emisoras guardadas por el usuario, con acceso rápido para quitarlas. */
-@Composable
-private fun FavoritesCarousel(
+private fun FavoriteRail(
     stations: List<Station>,
-    onSelect: (Station) -> Unit,
-    onRemove: (Station) -> Unit
+    onPlay: (Station) -> Unit,
+    onFavorite: (Station) -> Unit
 ) {
     LazyRow(
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(stations, key = { "favorite_${it.id}" }) { station ->
-            Card(
-                modifier = Modifier
-                    .width(220.dp)
-                    .clickable { onSelect(station) },
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = CarbonLight)
-            ) {
-                Row(
-                    Modifier.padding(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    StationLogo(station, size = 44.dp, cornerPercent = 12)
-                    Spacer(Modifier.width(10.dp))
-                    Text(
-                        text = station.displayName,
-                        style = MaterialTheme.typography.titleSmall,
-                        color = Color.White,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
-                    IconButton(onClick = { onRemove(station) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Favorite,
-                            contentDescription = "Quitar de favoritos",
-                            tint = NeonMagenta,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                }
-            }
+            TvChannelCard(
+                channelNumber = null,
+                station = station,
+                isFavorite = true,
+                onPlay = { onPlay(station) },
+                onFavorite = { onFavorite(station) }
+            )
         }
     }
 }
 
 @Composable
-private fun FeaturedCarousel(
-    stations: List<Station>,
-    onSelect: (Station) -> Unit
+private fun TvChannelCard(
+    channelNumber: Int?,
+    station: Station,
+    isFavorite: Boolean,
+    onPlay: () -> Unit,
+    onFavorite: (() -> Unit)?
 ) {
-    val context = LocalContext.current
-    LazyRow(
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    Card(
+        modifier = Modifier
+            .width(176.dp)
+            .height(108.dp)
+            .clickable(onClick = onPlay),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = CarbonLight)
     ) {
-        items(stations, key = { "featured_${it.id}" }) { station ->
-            Card(
-                modifier = Modifier
-                    .width(236.dp)
-                    .height(132.dp)
-                    .clickable { onSelect(station) },
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = CarbonLight)
-            ) {
-                Box(Modifier.fillMaxSize()) {
-                    station.logoUrls.firstOrNull()?.let { logoUrl ->
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data(logoUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize().alpha(0.38f)
-                        )
-                    }
-                    Box(
-                        Modifier.fillMaxSize().background(
-                            Brush.verticalGradient(
-                                listOf(Color.Transparent, SpaceBlack.copy(alpha = 0.96f))
-                            )
-                        )
+        Box(Modifier.fillMaxSize()) {
+            station.logoUrls.firstOrNull()?.let { logoUrl ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(logoUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize().blur(14.dp).alpha(0.35f)
+                )
+            }
+            Box(
+                Modifier.fillMaxSize().background(
+                    Brush.verticalGradient(
+                        listOf(Color(0x66050508), Color(0xE6050508))
                     )
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        StationLogo(station, size = 48.dp, cornerPercent = 12)
-                        Spacer(Modifier.width(10.dp))
-                        Text(
-                            text = station.displayName,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.White,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                    Text(
-                        text = "EN VIVO",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = NeonCyan,
-                        modifier = Modifier.padding(12.dp).align(Alignment.TopEnd)
+                )
+            )
+
+            if (channelNumber != null) {
+                Text(
+                    text = "CH %02d".format(channelNumber),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = NeonCyan,
+                    modifier = Modifier.padding(10.dp).align(Alignment.TopStart)
+                )
+            }
+
+            if (onFavorite != null) {
+                IconButton(
+                    onClick = onFavorite,
+                    modifier = Modifier.size(32.dp).align(Alignment.TopEnd)
+                ) {
+                    Icon(
+                        Icons.Filled.Favorite,
+                        contentDescription = "Quitar de favoritos",
+                        tint = NeonMagenta,
+                        modifier = Modifier.size(18.dp)
                     )
                 }
+            } else {
+                Text(
+                    text = "● LIVE",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = NeonMagenta,
+                    modifier = Modifier.padding(10.dp).align(Alignment.TopEnd)
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                StationLogo(station, size = 38.dp, cornerPercent = 10)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = station.displayName,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
@@ -464,35 +667,21 @@ private fun CategoryPills(
     onSelect: (Category) -> Unit
 ) {
     LazyRow(
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            FilterChip(
-                selected = onlyFavorites,
-                enabled = hasFavorites || onlyFavorites,
-                onClick = { onFavoritesToggle(!onlyFavorites) },
-                label = { Text("♥ Favoritos") },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = NeonMagenta.copy(alpha = 0.28f),
-                    selectedLabelColor = NeonMagenta,
-                    containerColor = CarbonLight,
-                    labelColor = Color(0xFFC6C6D6)
-                )
-            )
+            TvPill(
+                label = "♥ Mi lista",
+                active = onlyFavorites,
+                enabled = hasFavorites || onlyFavorites
+            ) { onFavoritesToggle(!onlyFavorites) }
         }
         items(Category.entries) { category ->
-            FilterChip(
-                selected = category == selected && !onlyFavorites,
-                onClick = { onSelect(category) },
-                label = { Text(category.label) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = NeonViolet.copy(alpha = 0.28f),
-                    selectedLabelColor = NeonCyan,
-                    containerColor = CarbonLight,
-                    labelColor = Color(0xFFC6C6D6)
-                )
-            )
+            TvPill(
+                label = category.label,
+                active = category == selected && !onlyFavorites
+            ) { onSelect(category) }
         }
     }
 }
@@ -508,26 +697,41 @@ private fun CityChips(cities: List<String>, query: String, onSelect: (String) ->
     ) {
         cities.forEach { city ->
             val isSelected = city.normalizedForSearch() == query.normalizedForSearch()
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = if (isSelected) NeonViolet.copy(alpha = 0.3f) else CarbonLight,
-                modifier = Modifier.clickable {
-                    onSelect(if (isSelected) "" else city)
-                }
-            ) {
-                Text(
-                    text = city,
-                    color = if (isSelected) NeonCyan else Color(0xFFC6C6D6),
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
-                )
+            TvPill(label = city, active = isSelected) {
+                onSelect(if (isSelected) "" else city)
             }
         }
     }
 }
 
 @Composable
-private fun StationCard(
+private fun TvPill(
+    label: String,
+    active: Boolean,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    val borderColor = if (active) NeonViolet else Color(0xFF2A2A38)
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = if (active) NeonViolet.copy(alpha = 0.28f) else CarbonLight,
+        modifier = Modifier
+            .border(1.dp, borderColor, RoundedCornerShape(20.dp))
+            .alpha(if (enabled) 1f else 0.45f)
+            .clickable(enabled = enabled, onClick = onClick)
+    ) {
+        Text(
+            text = label,
+            color = if (active) NeonCyan else Color(0xFFC6C6D6),
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun TvStationRow(
+    number: Int,
     station: Station,
     isFavorite: Boolean,
     onPlay: () -> Unit,
@@ -536,14 +740,19 @@ private fun StationCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 5.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
             .clickable(onClick = onPlay),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Carbon)
     ) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            StationLogo(station = station, size = 58.dp, cornerPercent = 14)
-
+            Text(
+                text = "%02d".format(number),
+                style = MaterialTheme.typography.labelMedium,
+                color = NeonCyan,
+                modifier = Modifier.width(26.dp)
+            )
+            StationLogo(station = station, size = 52.dp, cornerPercent = 12)
             Spacer(Modifier.width(12.dp))
 
             Column(Modifier.weight(1f)) {
@@ -554,13 +763,13 @@ private fun StationCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(3.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Filled.LocationOn,
                         contentDescription = null,
                         tint = NeonCyan,
-                        modifier = Modifier.size(13.dp)
+                        modifier = Modifier.size(12.dp)
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
@@ -570,7 +779,6 @@ private fun StationCard(
                         maxLines = 1
                     )
                 }
-                Spacer(Modifier.height(3.dp))
                 Text(
                     text = station.tagList.take(2).joinToString(" • ").ifBlank { "Radio en vivo" },
                     style = MaterialTheme.typography.labelMedium,
@@ -585,6 +793,20 @@ private fun StationCard(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
                     tint = if (isFavorite) NeonMagenta else MutedText
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(NeonViolet)
+                    .clickable(onClick = onPlay),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.PlayArrow,
+                    contentDescription = "Reproducir",
+                    tint = Color.White
                 )
             }
         }

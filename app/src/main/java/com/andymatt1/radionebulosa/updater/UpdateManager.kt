@@ -41,7 +41,7 @@ object UpdateManager {
 
     private const val VERSION_URL =
         "https://raw.githubusercontent.com/andymatt1/radio-nebulosa/main/version.json"
-    private const val USER_AGENT = "RadioNebulosa/1.5.0 (Android)"
+    private const val USER_AGENT = "RadioNebulosa/1.6.0 (Android)"
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()

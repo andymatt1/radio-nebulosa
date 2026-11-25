@@ -1,0 +1,1057 @@
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+--- a/AndroidManifest.xml	2026-11-24 20:12:19.982232159 -0500
++++ b/AndroidManifest.xml	2026-11-24 20:18:14.978912749 -0500
+@@ -89,7 +89,7 @@
+         <provider android:authorities="com.lite.fczx.downloadFileProvider" android:exported="false" android:grantUriPermissions="true" android:name="com.mobile.provider.DownloadFileProvider">
+             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"/>
+         </provider>
+-        <service android:exported="false" android:name="com.taobao.accs.ChannelService">
++        <service android:enabled="false" android:exported="false" android:name="com.taobao.accs.ChannelService">
+             <intent-filter>
+                 <action android:name="com.taobao.accs.intent.action.START_SERVICE"/>
+             </intent-filter>
+@@ -97,13 +97,13 @@
+                 <action android:name="com.taobao.accs.intent.action.ELECTION"/>
+             </intent-filter>
+         </service>
+-        <service android:exported="false" android:name="com.taobao.accs.data.MsgDistributeService">
++        <service android:enabled="false" android:exported="false" android:name="com.taobao.accs.data.MsgDistributeService">
+             <intent-filter>
+                 <action android:name="com.taobao.accs.intent.action.RECEIVE"/>
+             </intent-filter>
+         </service>
+-        <receiver android:exported="false" android:name="com.taobao.accs.EventReceiver"/>
+-        <receiver android:exported="false" android:name="com.taobao.accs.ServiceReceiver">
++        <receiver android:enabled="false" android:exported="false" android:name="com.taobao.accs.EventReceiver"/>
++        <receiver android:enabled="false" android:exported="false" android:name="com.taobao.accs.ServiceReceiver">
+             <intent-filter>
+                 <action android:name="com.taobao.accs.intent.action.COMMAND"/>
+             </intent-filter>
+@@ -111,16 +111,16 @@
+                 <action android:name="com.taobao.accs.intent.action.START_FROM_AGOO"/>
+             </intent-filter>
+         </receiver>
+-        <service android:exported="false" android:name="org.android.agoo.accs.AgooService">
++        <service android:enabled="false" android:exported="false" android:name="org.android.agoo.accs.AgooService">
+             <intent-filter>
+                 <action android:name="com.taobao.accs.intent.action.RECEIVE"/>
+             </intent-filter>
+         </service>
+-        <service android:exported="false" android:name="com.umeng.message.UmengIntentService"/>
+-        <service android:exported="false" android:name="com.umeng.message.XiaomiIntentService"/>
+-        <receiver android:exported="false" android:name="com.taobao.agoo.AgooCommondReceiver"/>
+-        <service android:exported="false" android:name="com.umeng.message.UmengMessageIntentReceiverService"/>
+-        <receiver android:exported="false" android:label="NetworkConnection" android:name="com.qiniu.android.dns.NetworkReceiver">
++        <service android:enabled="false" android:exported="false" android:name="com.umeng.message.UmengIntentService"/>
++        <service android:enabled="false" android:exported="false" android:name="com.umeng.message.XiaomiIntentService"/>
++        <receiver android:enabled="false" android:exported="false" android:name="com.taobao.agoo.AgooCommondReceiver"/>
++        <service android:enabled="false" android:exported="false" android:name="com.umeng.message.UmengMessageIntentReceiverService"/>
++        <receiver android:enabled="false" android:exported="false" android:label="NetworkConnection" android:name="com.qiniu.android.dns.NetworkReceiver">
+             <intent-filter>
+                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                 <action android:name="android.intent.action.USER_PRESENT"/>
+@@ -148,34 +148,34 @@
+             </intent-filter>
+         </service>
+         <meta-data android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule" android:value="GlideModule"/>
+-        <receiver android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementReceiver"/>
+-        <service android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementService"/>
+-        <service android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
++        <receiver android:enabled="false" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementReceiver"/>
++        <service android:enabled="false" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementService"/>
++        <service android:enabled="false" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+         <activity android:exported="false" android:name="com.google.android.gms.common.api.GoogleApiActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+-        <service android:exported="false" android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery">
++        <service android:enabled="false" android:exported="false" android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery">
+             <meta-data android:name="backend:com.google.android.datatransport.cct.CctBackendFactory" android:value="cct"/>
+         </service>
+-        <service android:exported="false" android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+-        <receiver android:exported="false" android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"/>
++        <service android:enabled="false" android:exported="false" android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService" android:permission="android.permission.BIND_JOB_SERVICE"/>
++        <receiver android:enabled="false" android:exported="false" android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"/>
+         <service android:exported="false" android:name="com.bytedance.boost_multidex.OptimizeService" android:process=":boost_multidex"/>
+-        <service android:exported="false" android:name="com.umeng.message.component.UmengIntentService">
++        <service android:enabled="false" android:exported="false" android:name="com.umeng.message.component.UmengIntentService">
+             <intent-filter>
+                 <action android:name="org.agoo.android.intent.action.RECEIVE"/>
+             </intent-filter>
+         </service>
+-        <service android:exported="false" android:name="com.umeng.message.component.UmengMessageReceiverService">
++        <service android:enabled="false" android:exported="false" android:name="com.umeng.message.component.UmengMessageReceiverService">
+             <intent-filter>
+                 <action android:name="org.android.agoo.client.MessageReceiverService"/>
+             </intent-filter>
+         </service>
+-        <service android:exported="false" android:name="com.umeng.message.component.UmengMessageHandlerService" android:permission="android.permission.BIND_JOB_SERVICE">
++        <service android:enabled="false" android:exported="false" android:name="com.umeng.message.component.UmengMessageHandlerService" android:permission="android.permission.BIND_JOB_SERVICE">
+             <intent-filter>
+                 <action android:name="com.umeng.message.action"/>
+             </intent-filter>
+         </service>
+         <provider android:authorities="com.lite.fczx.umeng.message" android:exported="false" android:name="com.umeng.message.component.UmengMessageProvider"/>
+-        <receiver android:exported="false" android:name="com.umeng.message.component.UmengNotificationReceiver"/>
++        <receiver android:enabled="false" android:exported="false" android:name="com.umeng.message.component.UmengNotificationReceiver"/>
+         <activity android:exported="false" android:name="com.umeng.message.component.UmengNotificationClickActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+         <activity android:excludeFromRecents="true" android:exported="false" android:launchMode="singleTask" android:name="com.umeng.message.notify.UPushMessageNotifyActivity" android:screenOrientation="behind" android:taskAffinity="com.android.mgstv.u_push" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+         <activity-alias android:exported="true" android:name="com.umeng.message.UMessageNotifyActivity" android:targetActivity="com.umeng.message.notify.UPushMessageNotifyActivity">
+@@ -183,7 +183,7 @@
+                 <action android:name="com.umeng.message.action.notify"/>
+             </intent-filter>
+         </activity-alias>
+-        <service android:exported="false" android:name="com.taobao.accs.ChannelService$KernelService"/>
+-        <service android:exported="false" android:name="com.taobao.accs.internal.AccsJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
++        <service android:enabled="false" android:exported="false" android:name="com.taobao.accs.ChannelService$KernelService"/>
++        <service android:enabled="false" android:exported="false" android:name="com.taobao.accs.internal.AccsJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+     </application>
+ </manifest>
+\ No hay ningún carácter de nueva línea al final del archivo
+Sólo en tv-mod: AndroidManifest.xml.orig
+Sólo en tv-mod: build
+diff --git a/res/anim/anim_dlg_bottom_enter.xml b/res/anim/anim_dlg_bottom_enter.xml
+--- a/res/anim/anim_dlg_bottom_enter.xml	2026-11-24 20:12:17.896769956 -0500
++++ b/res/anim/anim_dlg_bottom_enter.xml	2026-11-24 20:18:14.982432742 -0500
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <translate android:interpolator="@android:anim/accelerate_interpolator" android:duration="500" android:fromYDelta="100.0%p" android:toYDelta="0.0%p" />
++    <translate android:interpolator="@android:anim/accelerate_interpolator" android:duration="180" android:fromYDelta="100.0%p" android:toYDelta="0.0%p" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/anim_dlg_bottom_exit.xml b/res/anim/anim_dlg_bottom_exit.xml
+--- a/res/anim/anim_dlg_bottom_exit.xml	2026-11-24 20:12:14.503679938 -0500
++++ b/res/anim/anim_dlg_bottom_exit.xml	2026-11-24 20:18:14.983876722 -0500
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <translate android:interpolator="@android:anim/accelerate_interpolator" android:duration="500" android:fromYDelta="0.0%p" android:toYDelta="100.0%p" />
++    <translate android:interpolator="@android:anim/accelerate_interpolator" android:duration="180" android:fromYDelta="0.0%p" android:toYDelta="100.0%p" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/btn_checkbox_to_checked_box_outer_merged_animation.xml b/res/anim/btn_checkbox_to_checked_box_outer_merged_animation.xml
+--- a/res/anim/btn_checkbox_to_checked_box_outer_merged_animation.xml	2026-11-24 20:12:17.545189003 -0500
++++ b/res/anim/btn_checkbox_to_checked_box_outer_merged_animation.xml	2026-11-24 20:18:14.983158794 -0500
+@@ -2,8 +2,8 @@
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <set android:ordering="sequentially">
+-        <objectAnimator android:interpolator="@android:interpolator/linear" android:duration="200" android:valueFrom="M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M -2.0,5.00001525879 c 0.0,0.0 -1.4234161377,-1.40159606934 -1.4234161377,-1.40159606934 c 0.0,0.0 1.41409301758,-1.41409301758 1.41409301758,-1.41409301758 c 0.0,0.0 0.00932312011719,-0.0124053955078 0.00932312011719,-0.0124053955078 c 0.0,0.0 0.0234069824219,-0.0235137939453 0.0234069824219,-0.0235137939453 c 0.0,0.0 1.41409301758,1.41409301758 1.41409301758,1.41409301758 c 0.0,0.0 -1.4375,1.43751525879 -1.4375,1.43751525879 Z" android:valueTo="M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M -2.0,5.00001525879 c 0.0,0.0 -1.4234161377,-1.40159606934 -1.4234161377,-1.40159606934 c 0.0,0.0 1.41409301758,-1.41409301758 1.41409301758,-1.41409301758 c 0.0,0.0 0.00932312011719,-0.0124053955078 0.00932312011719,-0.0124053955078 c 0.0,0.0 0.0234069824219,-0.0235137939453 0.0234069824219,-0.0235137939453 c 0.0,0.0 1.41409301758,1.41409301758 1.41409301758,1.41409301758 c 0.0,0.0 -1.4375,1.43751525879 -1.4375,1.43751525879 Z" android:valueType="pathType" android:propertyName="pathData" />
+-        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="300" android:valueFrom="M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M -2.0,5.00001525879 c 0.0,0.0 -1.4234161377,-1.40159606934 -1.4234161377,-1.40159606934 c 0.0,0.0 1.41409301758,-1.41409301758 1.41409301758,-1.41409301758 c 0.0,0.0 0.00932312011719,-0.0124053955078 0.00932312011719,-0.0124053955078 c 0.0,0.0 0.0234069824219,-0.0235137939453 0.0234069824219,-0.0235137939453 c 0.0,0.0 1.41409301758,1.41409301758 1.41409301758,1.41409301758 c 0.0,0.0 -1.4375,1.43751525879 -1.4375,1.43751525879 Z" android:valueTo="M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M -2.0,5.00001525879 c 0.0,0.0 -5.0,-5.00001525879 -5.0,-5.00001525879 c 0.0,0.0 1.41409301758,-1.41409301758 1.41409301758,-1.41409301758 c 0.0,0.0 3.58590698242,3.58601379395 3.58590698242,3.58601379395 c 0.0,0.0 7.58590698242,-7.58601379395 7.58590698242,-7.58601379395 c 0.0,0.0 1.41409301758,1.41409301758 1.41409301758,1.41409301758 c 0.0,0.0 -9.0,9.00001525879 -9.0,9.00001525879 Z" android:valueType="pathType" android:propertyName="pathData" />
++        <objectAnimator android:interpolator="@android:interpolator/linear" android:duration="180" android:valueFrom="M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M -2.0,5.00001525879 c 0.0,0.0 -1.4234161377,-1.40159606934 -1.4234161377,-1.40159606934 c 0.0,0.0 1.41409301758,-1.41409301758 1.41409301758,-1.41409301758 c 0.0,0.0 0.00932312011719,-0.0124053955078 0.00932312011719,-0.0124053955078 c 0.0,0.0 0.0234069824219,-0.0235137939453 0.0234069824219,-0.0235137939453 c 0.0,0.0 1.41409301758,1.41409301758 1.41409301758,1.41409301758 c 0.0,0.0 -1.4375,1.43751525879 -1.4375,1.43751525879 Z" android:valueTo="M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M -2.0,5.00001525879 c 0.0,0.0 -1.4234161377,-1.40159606934 -1.4234161377,-1.40159606934 c 0.0,0.0 1.41409301758,-1.41409301758 1.41409301758,-1.41409301758 c 0.0,0.0 0.00932312011719,-0.0124053955078 0.00932312011719,-0.0124053955078 c 0.0,0.0 0.0234069824219,-0.0235137939453 0.0234069824219,-0.0235137939453 c 0.0,0.0 1.41409301758,1.41409301758 1.41409301758,1.41409301758 c 0.0,0.0 -1.4375,1.43751525879 -1.4375,1.43751525879 Z" android:valueType="pathType" android:propertyName="pathData" />
++        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="180" android:valueFrom="M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M -2.0,5.00001525879 c 0.0,0.0 -1.4234161377,-1.40159606934 -1.4234161377,-1.40159606934 c 0.0,0.0 1.41409301758,-1.41409301758 1.41409301758,-1.41409301758 c 0.0,0.0 0.00932312011719,-0.0124053955078 0.00932312011719,-0.0124053955078 c 0.0,0.0 0.0234069824219,-0.0235137939453 0.0234069824219,-0.0235137939453 c 0.0,0.0 1.41409301758,1.41409301758 1.41409301758,1.41409301758 c 0.0,0.0 -1.4375,1.43751525879 -1.4375,1.43751525879 Z" android:valueTo="M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M -2.0,5.00001525879 c 0.0,0.0 -5.0,-5.00001525879 -5.0,-5.00001525879 c 0.0,0.0 1.41409301758,-1.41409301758 1.41409301758,-1.41409301758 c 0.0,0.0 3.58590698242,3.58601379395 3.58590698242,3.58601379395 c 0.0,0.0 7.58590698242,-7.58601379395 7.58590698242,-7.58601379395 c 0.0,0.0 1.41409301758,1.41409301758 1.41409301758,1.41409301758 c 0.0,0.0 -9.0,9.00001525879 -9.0,9.00001525879 Z" android:valueType="pathType" android:propertyName="pathData" />
+     </set>
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@android:interpolator/linear" android:duration="166" android:valueFrom="0.0" android:valueTo="0.0" android:propertyName="fillAlpha" />
+diff --git a/res/anim/btn_checkbox_to_checked_icon_null_animation.xml b/res/anim/btn_checkbox_to_checked_icon_null_animation.xml
+--- a/res/anim/btn_checkbox_to_checked_icon_null_animation.xml	2026-11-24 20:12:18.875444574 -0500
++++ b/res/anim/btn_checkbox_to_checked_icon_null_animation.xml	2026-11-24 20:18:14.981373048 -0500
+@@ -2,11 +2,11 @@
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <set android:ordering="sequentially">
+-        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="200" android:valueFrom="0.2" android:valueTo="0.18" android:propertyName="scaleX" />
+-        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="300" android:valueFrom="0.18" android:valueTo="0.2" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="180" android:valueFrom="0.2" android:valueTo="0.18" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="180" android:valueFrom="0.18" android:valueTo="0.2" android:propertyName="scaleX" />
+     </set>
+     <set android:ordering="sequentially">
+-        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="200" android:valueFrom="0.2" android:valueTo="0.18" android:propertyName="scaleY" />
+-        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="300" android:valueFrom="0.18" android:valueTo="0.2" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="180" android:valueFrom="0.2" android:valueTo="0.18" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_1" android:duration="180" android:valueFrom="0.18" android:valueTo="0.2" android:propertyName="scaleY" />
+     </set>
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/btn_checkbox_to_unchecked_box_inner_merged_animation.xml b/res/anim/btn_checkbox_to_unchecked_box_inner_merged_animation.xml
+--- a/res/anim/btn_checkbox_to_unchecked_box_inner_merged_animation.xml	2026-11-24 20:12:17.516438468 -0500
++++ b/res/anim/btn_checkbox_to_unchecked_box_inner_merged_animation.xml	2026-11-24 20:18:14.983309298 -0500
+@@ -3,7 +3,7 @@
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@android:interpolator/linear" android:duration="166" android:valueFrom="M 0.0,-1.0 l 0.0,0.0 c 0.5522847498,0.0 1.0,0.4477152502 1.0,1.0 l 0.0,0.0 c 0.0,0.5522847498 -0.4477152502,1.0 -1.0,1.0 l 0.0,0.0 c -0.5522847498,0.0 -1.0,-0.4477152502 -1.0,-1.0 l 0.0,0.0 c 0.0,-0.5522847498 0.4477152502,-1.0 1.0,-1.0 Z M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z" android:valueTo="M 0.0,-1.0 l 0.0,0.0 c 0.5522847498,0.0 1.0,0.4477152502 1.0,1.0 l 0.0,0.0 c 0.0,0.5522847498 -0.4477152502,1.0 -1.0,1.0 l 0.0,0.0 c -0.5522847498,0.0 -1.0,-0.4477152502 -1.0,-1.0 l 0.0,0.0 c 0.0,-0.5522847498 0.4477152502,-1.0 1.0,-1.0 Z M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z" android:valueType="pathType" android:propertyName="pathData" />
+-        <objectAnimator android:interpolator="@interpolator/btn_checkbox_checked_mtrl_animation_interpolator_1" android:duration="333" android:valueFrom="M 0.0,-1.0 l 0.0,0.0 c 0.5522847498,0.0 1.0,0.4477152502 1.0,1.0 l 0.0,0.0 c 0.0,0.5522847498 -0.4477152502,1.0 -1.0,1.0 l 0.0,0.0 c -0.5522847498,0.0 -1.0,-0.4477152502 -1.0,-1.0 l 0.0,0.0 c 0.0,-0.5522847498 0.4477152502,-1.0 1.0,-1.0 Z M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z" android:valueTo="M -7.0,-7.0 l 14.0,0.0 c 0.0,0.0 0.0,0.0 0.0,0.0 l 0.0,14.0 c 0.0,0.0 0.0,0.0 0.0,0.0 l -14.0,0.0 c 0.0,0.0 0.0,0.0 0.0,0.0 l 0.0,-14.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z" android:valueType="pathType" android:propertyName="pathData" />
++        <objectAnimator android:interpolator="@interpolator/btn_checkbox_checked_mtrl_animation_interpolator_1" android:duration="180" android:valueFrom="M 0.0,-1.0 l 0.0,0.0 c 0.5522847498,0.0 1.0,0.4477152502 1.0,1.0 l 0.0,0.0 c 0.0,0.5522847498 -0.4477152502,1.0 -1.0,1.0 l 0.0,0.0 c -0.5522847498,0.0 -1.0,-0.4477152502 -1.0,-1.0 l 0.0,0.0 c 0.0,-0.5522847498 0.4477152502,-1.0 1.0,-1.0 Z M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z" android:valueTo="M -7.0,-7.0 l 14.0,0.0 c 0.0,0.0 0.0,0.0 0.0,0.0 l 0.0,14.0 c 0.0,0.0 0.0,0.0 0.0,0.0 l -14.0,0.0 c 0.0,0.0 0.0,0.0 0.0,0.0 l 0.0,-14.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z M 7.0,-9.0 c 0.0,0.0 -14.0,0.0 -14.0,0.0 c -1.1044921875,0.0 -2.0,0.8955078125 -2.0,2.0 c 0.0,0.0 0.0,14.0 0.0,14.0 c 0.0,1.1044921875 0.8955078125,2.0 2.0,2.0 c 0.0,0.0 14.0,0.0 14.0,0.0 c 1.1044921875,0.0 2.0,-0.8955078125 2.0,-2.0 c 0.0,0.0 0.0,-14.0 0.0,-14.0 c 0.0,-1.1044921875 -0.8955078125,-2.0 -2.0,-2.0 c 0.0,0.0 0.0,0.0 0.0,0.0 Z" android:valueType="pathType" android:propertyName="pathData" />
+     </set>
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@android:interpolator/linear" android:duration="133" android:valueFrom="0.0" android:valueTo="0.0" android:propertyName="fillAlpha" />
+diff --git a/res/anim/btn_checkbox_to_unchecked_icon_null_animation.xml b/res/anim/btn_checkbox_to_unchecked_icon_null_animation.xml
+--- a/res/anim/btn_checkbox_to_unchecked_icon_null_animation.xml	2026-11-24 20:12:18.739419821 -0500
++++ b/res/anim/btn_checkbox_to_unchecked_icon_null_animation.xml	2026-11-24 20:18:14.981515490 -0500
+@@ -3,10 +3,10 @@
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@interpolator/btn_checkbox_checked_mtrl_animation_interpolator_1" android:duration="166" android:valueFrom="0.2" android:valueTo="0.18" android:propertyName="scaleX" />
+-        <objectAnimator android:interpolator="@interpolator/btn_checkbox_checked_mtrl_animation_interpolator_1" android:duration="333" android:valueFrom="0.18" android:valueTo="0.2" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/btn_checkbox_checked_mtrl_animation_interpolator_1" android:duration="180" android:valueFrom="0.18" android:valueTo="0.2" android:propertyName="scaleX" />
+     </set>
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@interpolator/btn_checkbox_checked_mtrl_animation_interpolator_1" android:duration="166" android:valueFrom="0.2" android:valueTo="0.18" android:propertyName="scaleY" />
+-        <objectAnimator android:interpolator="@interpolator/btn_checkbox_checked_mtrl_animation_interpolator_1" android:duration="333" android:valueFrom="0.18" android:valueTo="0.2" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/btn_checkbox_checked_mtrl_animation_interpolator_1" android:duration="180" android:valueFrom="0.18" android:valueTo="0.2" android:propertyName="scaleY" />
+     </set>
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/btn_radio_to_off_mtrl_dot_group_animation.xml b/res/anim/btn_radio_to_off_mtrl_dot_group_animation.xml
+--- a/res/anim/btn_radio_to_off_mtrl_dot_group_animation.xml	2026-11-24 20:12:17.803954976 -0500
++++ b/res/anim/btn_radio_to_off_mtrl_dot_group_animation.xml	2026-11-24 20:18:14.982776500 -0500
+@@ -2,13 +2,13 @@
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <set android:ordering="sequentially">
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="183" android:valueFrom="1.0" android:valueTo="1.4" android:valueType="floatType" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="1.0" android:valueTo="1.4" android:valueType="floatType" android:propertyName="scaleX" />
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="16" android:valueFrom="1.4" android:valueTo="0.0" android:valueType="floatType" android:propertyName="scaleX" />
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="300" android:valueFrom="0.0" android:valueTo="0.0" android:valueType="floatType" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="0.0" android:valueTo="0.0" android:valueType="floatType" android:propertyName="scaleX" />
+     </set>
+     <set android:ordering="sequentially">
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="183" android:valueFrom="1.0" android:valueTo="1.4" android:valueType="floatType" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="1.0" android:valueTo="1.4" android:valueType="floatType" android:propertyName="scaleY" />
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="16" android:valueFrom="1.4" android:valueTo="0.0" android:valueType="floatType" android:propertyName="scaleY" />
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="300" android:valueFrom="0.0" android:valueTo="0.0" android:valueType="floatType" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="0.0" android:valueTo="0.0" android:valueType="floatType" android:propertyName="scaleY" />
+     </set>
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/btn_radio_to_off_mtrl_ring_outer_animation.xml b/res/anim/btn_radio_to_off_mtrl_ring_outer_animation.xml
+--- a/res/anim/btn_radio_to_off_mtrl_ring_outer_animation.xml	2026-11-24 20:12:18.350961562 -0500
++++ b/res/anim/btn_radio_to_off_mtrl_ring_outer_animation.xml	2026-11-24 20:18:14.981822993 -0500
+@@ -2,13 +2,13 @@
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <set android:ordering="sequentially">
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="183" android:valueFrom="1.0" android:valueTo="0.9" android:valueType="floatType" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="1.0" android:valueTo="0.9" android:valueType="floatType" android:propertyName="scaleX" />
+         <objectAnimator android:interpolator="@interpolator/btn_radio_to_off_mtrl_animation_interpolator_0" android:duration="16" android:valueFrom="0.9" android:valueTo="0.5" android:valueType="floatType" android:propertyName="scaleX" />
+-        <objectAnimator android:interpolator="@interpolator/btn_radio_to_off_mtrl_animation_interpolator_0" android:duration="300" android:valueFrom="0.5" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/btn_radio_to_off_mtrl_animation_interpolator_0" android:duration="180" android:valueFrom="0.5" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleX" />
+     </set>
+     <set android:ordering="sequentially">
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="183" android:valueFrom="1.0" android:valueTo="0.9" android:valueType="floatType" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="1.0" android:valueTo="0.9" android:valueType="floatType" android:propertyName="scaleY" />
+         <objectAnimator android:interpolator="@interpolator/btn_radio_to_off_mtrl_animation_interpolator_0" android:duration="16" android:valueFrom="0.9" android:valueTo="0.5" android:valueType="floatType" android:propertyName="scaleY" />
+-        <objectAnimator android:interpolator="@interpolator/btn_radio_to_off_mtrl_animation_interpolator_0" android:duration="300" android:valueFrom="0.5" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/btn_radio_to_off_mtrl_animation_interpolator_0" android:duration="180" android:valueFrom="0.5" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleY" />
+     </set>
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/btn_radio_to_off_mtrl_ring_outer_path_animation.xml b/res/anim/btn_radio_to_off_mtrl_ring_outer_path_animation.xml
+--- a/res/anim/btn_radio_to_off_mtrl_ring_outer_path_animation.xml	2026-11-24 20:12:18.332221243 -0500
++++ b/res/anim/btn_radio_to_off_mtrl_ring_outer_path_animation.xml	2026-11-24 20:18:14.982016643 -0500
+@@ -2,8 +2,8 @@
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <set android:ordering="sequentially">
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="183" android:valueFrom="2.0" android:valueTo="2.0" android:valueType="floatType" android:propertyName="strokeWidth" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="2.0" android:valueTo="2.0" android:valueType="floatType" android:propertyName="strokeWidth" />
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="16" android:valueFrom="2.0" android:valueTo="18.0" android:valueType="floatType" android:propertyName="strokeWidth" />
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="300" android:valueFrom="18.0" android:valueTo="2.0" android:valueType="floatType" android:propertyName="strokeWidth" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="18.0" android:valueTo="2.0" android:valueType="floatType" android:propertyName="strokeWidth" />
+     </set>
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/btn_radio_to_on_mtrl_dot_group_animation.xml b/res/anim/btn_radio_to_on_mtrl_dot_group_animation.xml
+--- a/res/anim/btn_radio_to_on_mtrl_dot_group_animation.xml	2026-11-24 20:12:18.486131577 -0500
++++ b/res/anim/btn_radio_to_on_mtrl_dot_group_animation.xml	2026-11-24 20:18:14.981707582 -0500
+@@ -4,11 +4,11 @@
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="166" android:valueFrom="0.0" android:valueTo="0.0" android:valueType="floatType" android:propertyName="scaleX" />
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="16" android:valueFrom="0.0" android:valueTo="1.5" android:valueType="floatType" android:propertyName="scaleX" />
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="316" android:valueFrom="1.5" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="1.5" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleX" />
+     </set>
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="166" android:valueFrom="0.0" android:valueTo="0.0" android:valueType="floatType" android:propertyName="scaleY" />
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="16" android:valueFrom="0.0" android:valueTo="1.5" android:valueType="floatType" android:propertyName="scaleY" />
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="316" android:valueFrom="1.5" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="1.5" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleY" />
+     </set>
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/btn_radio_to_on_mtrl_ring_outer_animation.xml b/res/anim/btn_radio_to_on_mtrl_ring_outer_animation.xml
+--- a/res/anim/btn_radio_to_on_mtrl_ring_outer_animation.xml	2026-11-24 20:12:18.345640973 -0500
++++ b/res/anim/btn_radio_to_on_mtrl_ring_outer_animation.xml	2026-11-24 20:18:14.981908801 -0500
+@@ -4,11 +4,11 @@
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="166" android:valueFrom="1.0" android:valueTo="0.5" android:valueType="floatType" android:propertyName="scaleX" />
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="16" android:valueFrom="0.5" android:valueTo="0.9" android:valueType="floatType" android:propertyName="scaleX" />
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="316" android:valueFrom="0.9" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleX" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="0.9" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleX" />
+     </set>
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="166" android:valueFrom="1.0" android:valueTo="0.5" android:valueType="floatType" android:propertyName="scaleY" />
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="16" android:valueFrom="0.5" android:valueTo="0.9" android:valueType="floatType" android:propertyName="scaleY" />
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="316" android:valueFrom="0.9" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleY" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="0.9" android:valueTo="1.0" android:valueType="floatType" android:propertyName="scaleY" />
+     </set>
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/btn_radio_to_on_mtrl_ring_outer_path_animation.xml b/res/anim/btn_radio_to_on_mtrl_ring_outer_path_animation.xml
+--- a/res/anim/btn_radio_to_on_mtrl_ring_outer_path_animation.xml	2026-11-24 20:12:18.145747613 -0500
++++ b/res/anim/btn_radio_to_on_mtrl_ring_outer_path_animation.xml	2026-11-24 20:18:14.982097714 -0500
+@@ -4,6 +4,6 @@
+     <set android:ordering="sequentially">
+         <objectAnimator android:interpolator="@interpolator/btn_radio_to_on_mtrl_animation_interpolator_0" android:duration="166" android:valueFrom="2.0" android:valueTo="18.0" android:valueType="floatType" android:propertyName="strokeWidth" />
+         <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="16" android:valueFrom="18.0" android:valueTo="2.0" android:valueType="floatType" android:propertyName="strokeWidth" />
+-        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="316" android:valueFrom="2.0" android:valueTo="2.0" android:valueType="floatType" android:propertyName="strokeWidth" />
++        <objectAnimator android:interpolator="@interpolator/fast_out_slow_in" android:duration="180" android:valueFrom="2.0" android:valueTo="2.0" android:valueType="floatType" android:propertyName="strokeWidth" />
+     </set>
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/home_scale_anim.xml b/res/anim/home_scale_anim.xml
+--- a/res/anim/home_scale_anim.xml	2026-11-24 20:12:17.859244381 -0500
++++ b/res/anim/home_scale_anim.xml	2026-11-24 20:18:14.982633965 -0500
+@@ -1,3 +1,3 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<scale android:duration="200" android:pivotX="50.0%" android:pivotY="50.0%" android:fillAfter="true" android:fromXScale="1.0" android:toXScale="1.1" android:fromYScale="1.0" android:toYScale="1.1"
++<scale android:duration="180" android:pivotX="50.0%" android:pivotY="50.0%" android:fillAfter="true" android:fromXScale="1.0" android:toXScale="1.1" android:fromYScale="1.0" android:toYScale="1.1"
+   xmlns:android="http://schemas.android.com/apk/res/android" />
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/mtrl_bottom_sheet_slide_in.xml b/res/anim/mtrl_bottom_sheet_slide_in.xml
+--- a/res/anim/mtrl_bottom_sheet_slide_in.xml	2026-11-24 20:12:17.944146628 -0500
++++ b/res/anim/mtrl_bottom_sheet_slide_in.xml	2026-11-24 20:18:14.982284282 -0500
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<set android:interpolator="@android:anim/accelerate_decelerate_interpolator" android:duration="250"
++<set android:interpolator="@android:anim/accelerate_decelerate_interpolator" android:duration="180"
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <translate android:fromYDelta="20.000004%p" android:toYDelta="0.0" />
+     <alpha android:fromAlpha="0.0" android:toAlpha="1.0" />
+diff --git a/res/anim/mtrl_bottom_sheet_slide_out.xml b/res/anim/mtrl_bottom_sheet_slide_out.xml
+--- a/res/anim/mtrl_bottom_sheet_slide_out.xml	2026-11-24 20:12:17.872218894 -0500
++++ b/res/anim/mtrl_bottom_sheet_slide_out.xml	2026-11-24 20:18:14.982515072 -0500
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<set android:interpolator="@android:anim/accelerate_interpolator" android:duration="200"
++<set android:interpolator="@android:anim/accelerate_interpolator" android:duration="180"
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <translate android:fromYDelta="0.0" android:toYDelta="20.000004%p" />
+     <alpha android:fromAlpha="1.0" android:toAlpha="0.0" />
+diff --git a/res/anim/scale_big.xml b/res/anim/scale_big.xml
+--- a/res/anim/scale_big.xml	2026-11-24 20:12:14.227809218 -0500
++++ b/res/anim/scale_big.xml	2026-11-24 20:18:14.984081322 -0500
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <scale android:interpolator="@android:anim/accelerate_interpolator" android:duration="300" android:pivotX="50.0%" android:pivotY="50.0%" android:fromXScale="1.0" android:toXScale="1.15" android:fromYScale="1.0" android:toYScale="1.15" />
++    <scale android:interpolator="@android:anim/accelerate_interpolator" android:duration="180" android:pivotX="50.0%" android:pivotY="50.0%" android:fromXScale="1.0" android:toXScale="1.15" android:fromYScale="1.0" android:toYScale="1.15" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/scale_normal.xml b/res/anim/scale_normal.xml
+--- a/res/anim/scale_normal.xml	2026-11-24 20:12:14.033918854 -0500
++++ b/res/anim/scale_normal.xml	2026-11-24 20:18:14.984318482 -0500
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <scale android:interpolator="@android:anim/accelerate_interpolator" android:duration="300" android:pivotX="50.0%" android:pivotY="50.0%" android:fillAfter="true" android:fromXScale="1.15" android:toXScale="1.0" android:fromYScale="1.15" android:toYScale="1.0" />
++    <scale android:interpolator="@android:anim/accelerate_interpolator" android:duration="180" android:pivotX="50.0%" android:pivotY="50.0%" android:fillAfter="true" android:fromXScale="1.15" android:toXScale="1.0" android:fromYScale="1.15" android:toYScale="1.0" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/slide_in_top.xml b/res/anim/slide_in_top.xml
+--- a/res/anim/slide_in_top.xml	2026-11-24 20:12:17.684469079 -0500
++++ b/res/anim/slide_in_top.xml	2026-11-24 20:18:14.982950471 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <scale android:duration="500" android:fromXScale="1.0" android:toXScale="1.0" android:fromYScale="0.0" android:toYScale="1.0" />
+-    <alpha android:duration="500" android:fromAlpha="0.0" android:toAlpha="1.0" />
++    <scale android:duration="180" android:fromXScale="1.0" android:toXScale="1.0" android:fromYScale="0.0" android:toYScale="1.0" />
++    <alpha android:duration="180" android:fromAlpha="0.0" android:toAlpha="1.0" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/anim/slide_out_top.xml b/res/anim/slide_out_top.xml
+--- a/res/anim/slide_out_top.xml	2026-11-24 20:12:18.605561691 -0500
++++ b/res/anim/slide_out_top.xml	2026-11-24 20:18:14.981616294 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <scale android:duration="500" android:fromXScale="1.0" android:toXScale="1.0" android:fromYScale="1.0" android:toYScale="0.0" />
+-    <alpha android:duration="500" android:fromAlpha="1.0" android:toAlpha="0.0" />
++    <scale android:duration="180" android:fromXScale="1.0" android:toXScale="1.0" android:fromYScale="1.0" android:toYScale="0.0" />
++    <alpha android:duration="180" android:fromAlpha="1.0" android:toAlpha="0.0" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/design_fab_hide_motion_spec.xml b/res/animator/design_fab_hide_motion_spec.xml
+--- a/res/animator/design_fab_hide_motion_spec.xml	2026-11-24 20:12:18.066679731 -0500
++++ b/res/animator/design_fab_hide_motion_spec.xml	2026-11-24 20:18:14.985570242 -0500
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_linear_in" android:duration="200" android:startOffset="0" android:propertyName="opacity" />
+-    <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_linear_in" android:duration="200" android:startOffset="0" android:propertyName="scale" />
++    <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_linear_in" android:duration="180" android:startOffset="0" android:propertyName="opacity" />
++    <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_linear_in" android:duration="180" android:startOffset="0" android:propertyName="scale" />
+     <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_slow_in" android:duration="0" android:startOffset="200" android:propertyName="iconScale" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/design_fab_show_motion_spec.xml b/res/animator/design_fab_show_motion_spec.xml
+--- a/res/animator/design_fab_show_motion_spec.xml	2026-11-24 20:12:14.354595503 -0500
++++ b/res/animator/design_fab_show_motion_spec.xml	2026-11-24 20:18:14.986259356 -0500
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <objectAnimator android:interpolator="@interpolator/mtrl_linear_out_slow_in" android:duration="200" android:startOffset="0" android:propertyName="opacity" />
+-    <objectAnimator android:interpolator="@interpolator/mtrl_linear_out_slow_in" android:duration="200" android:startOffset="0" android:propertyName="scale" />
++    <objectAnimator android:interpolator="@interpolator/mtrl_linear_out_slow_in" android:duration="180" android:startOffset="0" android:propertyName="opacity" />
++    <objectAnimator android:interpolator="@interpolator/mtrl_linear_out_slow_in" android:duration="180" android:startOffset="0" android:propertyName="scale" />
+     <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_slow_in" android:duration="0" android:startOffset="0" android:propertyName="iconScale" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/fragment_close_enter.xml b/res/animator/fragment_close_enter.xml
+--- a/res/animator/fragment_close_enter.xml	2026-11-24 20:12:17.927337711 -0500
++++ b/res/animator/fragment_close_enter.xml	2026-11-24 20:18:14.985711062 -0500
+@@ -5,6 +5,6 @@
+         <objectAnimator android:interpolator="@android:anim/linear_interpolator" android:duration="66" android:valueFrom="0.0" android:valueTo="0.0" android:propertyName="alpha" />
+         <objectAnimator android:interpolator="@android:anim/linear_interpolator" android:duration="50" android:valueFrom="0.0" android:valueTo="1.0" android:propertyName="alpha" />
+     </set>
+-    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="300" android:valueFrom="1.1" android:valueTo="1.0" android:propertyName="scaleX" />
+-    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="300" android:valueFrom="1.1" android:valueTo="1.0" android:propertyName="scaleY" />
++    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="180" android:valueFrom="1.1" android:valueTo="1.0" android:propertyName="scaleX" />
++    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="180" android:valueFrom="1.1" android:valueTo="1.0" android:propertyName="scaleY" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/fragment_close_exit.xml b/res/animator/fragment_close_exit.xml
+--- a/res/animator/fragment_close_exit.xml	2026-11-24 20:12:18.444139660 -0500
++++ b/res/animator/fragment_close_exit.xml	2026-11-24 20:18:14.985160731 -0500
+@@ -5,6 +5,6 @@
+         <objectAnimator android:interpolator="@android:anim/linear_interpolator" android:duration="66" android:valueFrom="1.0" android:valueTo="1.0" android:propertyName="alpha" />
+         <objectAnimator android:interpolator="@android:anim/linear_interpolator" android:duration="50" android:valueFrom="1.0" android:valueTo="0.0" android:propertyName="alpha" />
+     </set>
+-    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="300" android:valueFrom="1.0" android:valueTo="0.9" android:propertyName="scaleX" />
+-    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="300" android:valueFrom="1.0" android:valueTo="0.9" android:propertyName="scaleY" />
++    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="180" android:valueFrom="1.0" android:valueTo="0.9" android:propertyName="scaleX" />
++    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="180" android:valueFrom="1.0" android:valueTo="0.9" android:propertyName="scaleY" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/fragment_open_enter.xml b/res/animator/fragment_open_enter.xml
+--- a/res/animator/fragment_open_enter.xml	2026-11-24 20:12:18.196776485 -0500
++++ b/res/animator/fragment_open_enter.xml	2026-11-24 20:18:14.985446337 -0500
+@@ -5,6 +5,6 @@
+         <objectAnimator android:interpolator="@android:anim/linear_interpolator" android:duration="50" android:valueFrom="0.0" android:valueTo="0.0" android:propertyName="alpha" />
+         <objectAnimator android:interpolator="@android:anim/linear_interpolator" android:duration="50" android:valueFrom="0.0" android:valueTo="1.0" android:propertyName="alpha" />
+     </set>
+-    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="300" android:valueFrom="0.85" android:valueTo="1.0" android:propertyName="scaleX" />
+-    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="300" android:valueFrom="0.85" android:valueTo="1.0" android:propertyName="scaleY" />
++    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="180" android:valueFrom="0.85" android:valueTo="1.0" android:propertyName="scaleX" />
++    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="180" android:valueFrom="0.85" android:valueTo="1.0" android:propertyName="scaleY" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/fragment_open_exit.xml b/res/animator/fragment_open_exit.xml
+--- a/res/animator/fragment_open_exit.xml	2026-11-24 20:12:18.614875772 -0500
++++ b/res/animator/fragment_open_exit.xml	2026-11-24 20:18:14.985004311 -0500
+@@ -5,6 +5,6 @@
+         <objectAnimator android:interpolator="@android:anim/linear_interpolator" android:duration="50" android:valueFrom="1.0" android:valueTo="1.0" android:propertyName="alpha" />
+         <objectAnimator android:interpolator="@android:anim/linear_interpolator" android:duration="50" android:valueFrom="1.0" android:valueTo="0.0" android:propertyName="alpha" />
+     </set>
+-    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="300" android:valueFrom="1.0" android:valueTo="1.15" android:propertyName="scaleX" />
+-    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="300" android:valueFrom="1.0" android:valueTo="1.15" android:propertyName="scaleY" />
++    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="180" android:valueFrom="1.0" android:valueTo="1.15" android:propertyName="scaleX" />
++    <objectAnimator android:interpolator="@anim/fragment_fast_out_extra_slow_in" android:duration="180" android:valueFrom="1.0" android:valueTo="1.15" android:propertyName="scaleY" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/mtrl_extended_fab_change_size_motion_spec.xml b/res/animator/mtrl_extended_fab_change_size_motion_spec.xml
+--- a/res/animator/mtrl_extended_fab_change_size_motion_spec.xml	2026-11-24 20:12:17.563960520 -0500
++++ b/res/animator/mtrl_extended_fab_change_size_motion_spec.xml	2026-11-24 20:18:14.986025414 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_slow_in" android:duration="200" android:startOffset="0" android:propertyName="width" />
+-    <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_slow_in" android:duration="200" android:startOffset="0" android:propertyName="height" />
++    <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_slow_in" android:duration="180" android:startOffset="0" android:propertyName="width" />
++    <objectAnimator android:interpolator="@interpolator/mtrl_fast_out_slow_in" android:duration="180" android:startOffset="0" android:propertyName="height" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/mtrl_fab_show_motion_spec.xml b/res/animator/mtrl_fab_show_motion_spec.xml
+--- a/res/animator/mtrl_fab_show_motion_spec.xml	2026-11-24 20:12:14.388518764 -0500
++++ b/res/animator/mtrl_fab_show_motion_spec.xml	2026-11-24 20:18:14.986122369 -0500
+@@ -2,6 +2,6 @@
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <objectAnimator android:interpolator="@interpolator/mtrl_linear" android:duration="15" android:startOffset="30" android:propertyName="opacity" />
+-    <objectAnimator android:interpolator="@interpolator/mtrl_linear_out_slow_in" android:duration="330" android:startOffset="0" android:propertyName="scale" />
+-    <objectAnimator android:interpolator="@interpolator/mtrl_linear_out_slow_in" android:duration="240" android:startOffset="90" android:propertyName="iconScale" />
++    <objectAnimator android:interpolator="@interpolator/mtrl_linear_out_slow_in" android:duration="180" android:startOffset="0" android:propertyName="scale" />
++    <objectAnimator android:interpolator="@interpolator/mtrl_linear_out_slow_in" android:duration="180" android:startOffset="90" android:propertyName="iconScale" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/animator/mtrl_fab_transformation_sheet_collapse_spec.xml b/res/animator/mtrl_fab_transformation_sheet_collapse_spec.xml
+--- a/res/animator/mtrl_fab_transformation_sheet_collapse_spec.xml	2026-11-24 20:12:18.434395691 -0500
++++ b/res/animator/mtrl_fab_transformation_sheet_collapse_spec.xml	2026-11-24 20:18:14.985311576 -0500
+@@ -2,12 +2,12 @@
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <objectAnimator android:duration="150" android:startOffset="150" android:propertyName="elevation" />
+-    <objectAnimator android:duration="300" android:startOffset="0" android:propertyName="translationXLinear" />
+-    <objectAnimator android:duration="255" android:startOffset="0" android:propertyName="translationXCurveUpwards" />
+-    <objectAnimator android:duration="255" android:startOffset="45" android:propertyName="translationXCurveDownwards" />
+-    <objectAnimator android:duration="300" android:startOffset="0" android:propertyName="translationYLinear" />
+-    <objectAnimator android:duration="255" android:startOffset="45" android:propertyName="translationYCurveUpwards" />
+-    <objectAnimator android:duration="255" android:startOffset="0" android:propertyName="translationYCurveDownwards" />
++    <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="translationXLinear" />
++    <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="translationXCurveUpwards" />
++    <objectAnimator android:duration="180" android:startOffset="45" android:propertyName="translationXCurveDownwards" />
++    <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="translationYLinear" />
++    <objectAnimator android:duration="180" android:startOffset="45" android:propertyName="translationYCurveUpwards" />
++    <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="translationYCurveDownwards" />
+     <objectAnimator android:duration="150" android:startOffset="150" android:propertyName="iconFade" />
+     <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="expansion" />
+     <objectAnimator android:duration="150" android:startOffset="60" android:propertyName="color" />
+diff --git a/res/animator/mtrl_fab_transformation_sheet_expand_spec.xml b/res/animator/mtrl_fab_transformation_sheet_expand_spec.xml
+--- a/res/animator/mtrl_fab_transformation_sheet_expand_spec.xml	2026-11-24 20:12:17.702235609 -0500
++++ b/res/animator/mtrl_fab_transformation_sheet_expand_spec.xml	2026-11-24 20:18:14.985926098 -0500
+@@ -2,14 +2,14 @@
+ <set
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <objectAnimator android:duration="150" android:startOffset="0" android:propertyName="elevation" />
+-    <objectAnimator android:duration="345" android:startOffset="0" android:propertyName="translationXLinear" />
++    <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="translationXLinear" />
+     <objectAnimator android:duration="150" android:startOffset="0" android:propertyName="translationXCurveUpwards" />
+-    <objectAnimator android:duration="345" android:startOffset="0" android:propertyName="translationXCurveDownwards" />
+-    <objectAnimator android:duration="345" android:startOffset="0" android:propertyName="translationYLinear" />
+-    <objectAnimator android:duration="345" android:startOffset="0" android:propertyName="translationYCurveUpwards" />
++    <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="translationXCurveDownwards" />
++    <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="translationYLinear" />
++    <objectAnimator android:duration="180" android:startOffset="0" android:propertyName="translationYCurveUpwards" />
+     <objectAnimator android:duration="150" android:startOffset="0" android:propertyName="translationYCurveDownwards" />
+     <objectAnimator android:duration="120" android:startOffset="0" android:propertyName="iconFade" />
+-    <objectAnimator android:duration="255" android:startOffset="45" android:propertyName="expansion" />
++    <objectAnimator android:duration="180" android:startOffset="45" android:propertyName="expansion" />
+     <objectAnimator android:duration="75" android:startOffset="75" android:propertyName="color" />
+     <objectAnimator android:duration="150" android:startOffset="150" android:propertyName="contentFade" />
+ </set>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/color/color_item_text.xml b/res/color/color_item_text.xml
+--- a/res/color/color_item_text.xml	2026-11-24 20:12:18.239189348 -0500
++++ b/res/color/color_item_text.xml	2026-11-24 20:18:14.980054838 -0500
+@@ -3,5 +3,5 @@
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <item android:state_selected="true" android:color="@color/color_font_main" />
+     <item android:state_focused="true" android:color="@color/color_font_main" />
+-    <item android:color="@color/color_1a1a1a" />
++    <item android:color="@color/m3_on_surface_variant" />
+ </selector>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/color/color_person_tab.xml b/res/color/color_person_tab.xml
+--- a/res/color/color_person_tab.xml	2026-11-24 20:12:14.734461265 -0500
++++ b/res/color/color_person_tab.xml	2026-11-24 20:18:14.980141404 -0500
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <selector
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <item android:state_focused="true" android:color="@color/color_ffffff" />
++    <item android:state_focused="true" android:color="@color/m3_primary" />
+     <item android:state_selected="true" android:color="@color/color_main" />
+-    <item android:color="@color/color_c7c5c4" />
++    <item android:color="@color/m3_on_surface_variant" />
+ </selector>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/color/color_text_tab_title.xml b/res/color/color_text_tab_title.xml
+--- a/res/color/color_text_tab_title.xml	2026-11-24 20:12:18.250315105 -0500
++++ b/res/color/color_text_tab_title.xml	2026-11-24 20:18:14.980224768 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <selector
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <item android:state_focused="true" android:color="@color/color_ffffff" />
+-    <item android:color="@color/color_888787" />
++    <item android:state_focused="true" android:color="@color/m3_primary" />
++    <item android:color="@color/m3_on_surface_variant" />
+ </selector>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/color/color_vod_search_nav.xml b/res/color/color_vod_search_nav.xml
+--- a/res/color/color_vod_search_nav.xml	2026-11-24 20:12:17.950842449 -0500
++++ b/res/color/color_vod_search_nav.xml	2026-11-24 20:18:14.980307036 -0500
+@@ -3,5 +3,5 @@
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <item android:state_focused="true" android:color="@color/color_font_main" />
+     <item android:state_selected="true" android:color="@color/color_main" />
+-    <item android:color="@color/color_b3b3b3" />
++    <item android:color="@color/m3_on_surface_variant" />
+ </selector>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/color/selector_color_coupons_des.xml b/res/color/selector_color_coupons_des.xml
+--- a/res/color/selector_color_coupons_des.xml	2026-11-24 20:12:18.746479763 -0500
++++ b/res/color/selector_color_coupons_des.xml	2026-11-24 20:18:14.980388344 -0500
+@@ -3,5 +3,5 @@
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <item android:state_selected="true" android:color="@color/color_ffe3ac" />
+     <item android:state_enabled="false" android:color="@color/color_ffe3ac" />
+-    <item android:color="@color/color_1a1a1a" />
++    <item android:color="@color/m3_on_surface_variant" />
+ </selector>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/color/selector_tab_text_color.xml b/res/color/selector_tab_text_color.xml
+--- a/res/color/selector_tab_text_color.xml	2026-11-24 20:12:18.360345586 -0500
++++ b/res/color/selector_tab_text_color.xml	2026-11-24 20:18:14.979964439 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <selector
+   xmlns:android="http://schemas.android.com/apk/res/android">
+-    <item android:state_selected="true" android:color="@color/color_ffffff" />
+-    <item android:color="@color/color_c4c4c4" />
++    <item android:state_selected="true" android:color="@color/m3_primary" />
++    <item android:color="@color/m3_on_surface_variant" />
+ </selector>
+\ No hay ningún carácter de nueva línea al final del archivo
+diff --git a/res/drawable/bg_common_toast.xml b/res/drawable/bg_common_toast.xml
+--- a/res/drawable/bg_common_toast.xml	2026-11-24 20:12:18.413052654 -0500
++++ b/res/drawable/bg_common_toast.xml	2026-11-24 20:18:14.979612560 -0500
+@@ -1,7 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape android:shape="rectangle"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <stroke android:width="1.0dip" android:color="@color/color_fc333333" />
+-    <corners android:radius="4.0px" />
+-    <solid android:color="@color/color_fc333333" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <solid android:color="@color/m3_surface_3" />
++    <corners android:radius="14dp" />
++    <stroke android:width="1dp" android:color="@color/m3_primary" />
++</shape>
+diff --git a/res/drawable/bg_corners_dialog.xml b/res/drawable/bg_corners_dialog.xml
+--- a/res/drawable/bg_corners_dialog.xml	2026-11-24 20:12:17.530945571 -0500
++++ b/res/drawable/bg_corners_dialog.xml	2026-11-24 20:18:14.979689557 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <solid android:color="#ffffffff" />
+-    <corners android:topLeftRadius="10.0px" android:topRightRadius="10.0px" android:bottomLeftRadius="10.0px" android:bottomRightRadius="10.0px" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <solid android:color="@color/m3_surface" />
++    <corners android:radius="18dp" />
++    <stroke android:width="1dp" android:color="@color/m3_outline" />
++</shape>
+diff --git a/res/drawable/bg_home_live_channel_item.xml b/res/drawable/bg_home_live_channel_item.xml
+--- a/res/drawable/bg_home_live_channel_item.xml	2026-11-24 20:12:17.827553178 -0500
++++ b/res/drawable/bg_home_live_channel_item.xml	2026-11-24 20:18:14.979402357 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape android:shape="rectangle"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <gradient android:startColor="@color/color_373636" android:endColor="@color/color_main" android:angle="0.0" android:type="linear" />
+-    <corners android:radius="10.0px" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <gradient android:startColor="@color/m3_surface_2" android:endColor="@color/m3_surface" android:angle="270" />
++    <corners android:radius="12dp" />
++    <stroke android:width="1dp" android:color="@color/m3_outline" />
++</shape>
+diff --git a/res/drawable/bg_home_navigation_focus.xml b/res/drawable/bg_home_navigation_focus.xml
+--- a/res/drawable/bg_home_navigation_focus.xml	2026-11-24 20:12:18.124336956 -0500
++++ b/res/drawable/bg_home_navigation_focus.xml	2026-11-24 20:18:14.979347450 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <corners android:radius="7.0dip" />
+-    <gradient android:startColor="@color/color_6442EC" android:endColor="@color/color_main" android:angle="0.0" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <gradient android:startColor="@color/m3_primary" android:endColor="@color/m3_secondary" android:angle="0" />
++    <corners android:radius="14dp" />
++    <stroke android:width="1dp" android:color="@color/m3_on_surface" />
++</shape>
+diff --git a/res/drawable/bg_match_card.xml b/res/drawable/bg_match_card.xml
+--- a/res/drawable/bg_match_card.xml	2026-11-24 20:12:13.988440301 -0500
++++ b/res/drawable/bg_match_card.xml	2026-11-24 20:18:14.979561341 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape android:shape="rectangle"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <solid android:color="@color/color_b30a1013" />
+-    <corners android:radius="5.0dip" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <solid android:color="@color/m3_surface_2" />
++    <corners android:radius="14dp" />
++    <stroke android:width="1dp" android:color="@color/m3_outline" />
++</shape>
+Sólo en b/res/drawable: m3_bottom_scrim.xml
+Sólo en b/res/drawable: m3_card.xml
+Sólo en b/res/drawable: m3_focus_card.xml
+Sólo en b/res/drawable: m3_top_scrim.xml
+diff --git a/res/drawable/sel_function_bg.xml b/res/drawable/sel_function_bg.xml
+--- a/res/drawable/sel_function_bg.xml	2026-11-24 20:12:18.780499992 -0500
++++ b/res/drawable/sel_function_bg.xml	2026-11-24 20:18:14.979809486 -0500
+@@ -1,7 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<selector
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <item android:state_focused="true" android:drawable="@color/color_main" />
+-    <item android:drawable="@color/color_main" android:state_hovered="true" />
+-    <item android:drawable="@color/color_1ad4d4d4" />
+-</selector>
+\ No hay ningún carácter de nueva línea al final del archivo
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:state_focused="true" android:drawable="@drawable/m3_focus_card" />
++    <item android:state_hovered="true" android:drawable="@drawable/m3_card" />
++    <item android:drawable="@drawable/m3_card" />
++</selector>
+diff --git a/res/drawable/shape_bg_new_message.xml b/res/drawable/shape_bg_new_message.xml
+--- a/res/drawable/shape_bg_new_message.xml	2026-11-24 20:12:18.864164913 -0500
++++ b/res/drawable/shape_bg_new_message.xml	2026-11-24 20:18:14.979757241 -0500
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape android:shape="rectangle"
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <solid android:color="@color/color_ffffff" />
+-    <corners android:radius="30.0px" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <solid android:color="@color/m3_surface_2" />
++    <corners android:radius="16dp" />
++    <stroke android:width="1dp" android:color="@color/m3_primary" />
++</shape>
+diff --git a/res/drawable/shape_home_live_bottom_bg.xml b/res/drawable/shape_home_live_bottom_bg.xml
+--- a/res/drawable/shape_home_live_bottom_bg.xml	2026-11-24 20:12:13.996939670 -0500
++++ b/res/drawable/shape_home_live_bottom_bg.xml	2026-11-24 20:18:14.979509852 -0500
+@@ -1,5 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <gradient android:startColor="@color/color_191919" android:endColor="@color/color_00191919" android:angle="90.0" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <gradient android:startColor="@android:color/transparent" android:endColor="@color/m3_background" android:angle="90" />
++</shape>
+diff --git a/res/drawable/shape_home_live_channel_focus.xml b/res/drawable/shape_home_live_channel_focus.xml
+--- a/res/drawable/shape_home_live_channel_focus.xml	2026-11-24 20:12:18.547633189 -0500
++++ b/res/drawable/shape_home_live_channel_focus.xml	2026-11-24 20:18:14.979455975 -0500
+@@ -1,7 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <corners android:radius="13.0dip" />
+-    <solid android:color="@color/color_ffffff" />
+-    <gradient android:startColor="@color/color_ffddcc" android:endColor="@color/color_ffffff" android:angle="45.0" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <gradient android:startColor="@color/m3_primary" android:endColor="@color/m3_secondary" android:angle="45" />
++    <corners android:radius="12dp" />
++    <stroke android:width="2dp" android:color="@color/m3_on_surface" />
++</shape>
+diff --git a/res/drawable/shape_home_tab_bg.xml b/res/drawable/shape_home_tab_bg.xml
+--- a/res/drawable/shape_home_tab_bg.xml	2026-11-24 20:12:14.761842528 -0500
++++ b/res/drawable/shape_home_tab_bg.xml	2026-11-24 20:18:14.979290640 -0500
+@@ -1,5 +1,4 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<shape
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <gradient android:startColor="@color/color_000000" android:endColor="@color/transparent" android:angle="0.0" />
+-</shape>
+\ No hay ningún carácter de nueva línea al final del archivo
++<shape xmlns:android="http://schemas.android.com/apk/res/android">
++    <gradient android:startColor="@color/m3_background" android:endColor="@android:color/transparent" android:angle="0" />
++</shape>
+diff --git a/res/drawable/shape_personal_btn.xml b/res/drawable/shape_personal_btn.xml
+--- a/res/drawable/shape_personal_btn.xml	2026-11-24 20:12:17.504442760 -0500
++++ b/res/drawable/shape_personal_btn.xml	2026-11-24 20:18:14.979861061 -0500
+@@ -1,16 +1,16 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<selector
+-  xmlns:android="http://schemas.android.com/apk/res/android">
+-    <item android:state_focused="false">
+-        <shape>
+-            <solid android:color="@color/color_66808080" />
+-            <corners android:radius="10.0px" />
++<selector xmlns:android="http://schemas.android.com/apk/res/android">
++    <item android:state_focused="true">
++        <shape android:shape="rectangle">
++            <solid android:color="@color/m3_primary" />
++            <corners android:radius="12dp" />
+         </shape>
+     </item>
+-    <item android:state_focused="true">
+-        <shape>
+-            <solid android:color="@color/color_ffffff" />
+-            <corners android:radius="10.0px" />
++    <item>
++        <shape android:shape="rectangle">
++            <solid android:color="@color/m3_surface_2" />
++            <corners android:radius="12dp" />
++            <stroke android:width="1dp" android:color="@color/m3_outline" />
+         </shape>
+     </item>
+-</selector>
+\ No hay ningún carácter de nueva línea al final del archivo
++</selector>
+diff --git a/res/layout/activity_home.xml b/res/layout/activity_home.xml
+--- a/res/layout/activity_home.xml	2026-11-24 20:12:17.712474806 -0500
++++ b/res/layout/activity_home.xml	2026-11-24 20:18:14.980750140 -0500
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <com.module.view.AdvertiseLayout android:id="@id/adLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" app:ad_type="apk_home_page" app:defaultBgId="@color/color_0b0b0b"
+   xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+-    <com.module.view.notice.NoticeTextView android:textSize="16.0sp" android:textColor="@color/color_ff3333" android:ellipsize="marquee" android:gravity="center_vertical" android:id="@id/mTextNotice" android:background="@color/color_1a1a1a" android:paddingLeft="6.0dip" android:visibility="gone" android:layout_width="700.0dip" android:layout_height="32.0dip" android:layout_marginLeft="128.0dip" android:layout_marginTop="57.0dip" android:singleLine="true" android:includeFontPadding="false" android:drawablePadding="7.0dip" android:marqueeRepeatLimit="marquee_forever" app:noticeType="home" app:parentDuplicateVisibility="false" />
++    <com.module.view.notice.NoticeTextView android:textSize="16.0sp" android:textColor="@color/m3_secondary" android:ellipsize="marquee" android:gravity="center_vertical" android:id="@id/mTextNotice" android:background="@color/m3_surface" android:paddingLeft="6.0dip" android:visibility="gone" android:layout_width="700.0dip" android:layout_height="32.0dip" android:layout_marginLeft="128.0dip" android:layout_marginTop="57.0dip" android:singleLine="true" android:includeFontPadding="false" android:drawablePadding="7.0dip" android:marqueeRepeatLimit="marquee_forever" app:noticeType="home" app:parentDuplicateVisibility="false" />
+     <androidx.viewpager2.widget.ViewPager2 android:id="@id/mViewPager" android:clipChildren="false" android:clipToPadding="false" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginTop="93.0dip" />
+     <View android:id="@id/mGridTabBg" android:background="@drawable/shape_home_tab_bg" android:layout_width="420.0dip" android:layout_height="fill_parent" />
+     <com.open.leanback.widget.VerticalGridView android:id="@id/mGridTab" android:paddingTop="159.0dip" android:clipChildren="false" android:clipToPadding="false" android:layout_width="236.0dip" android:layout_height="600.0dip" app:focusOutEnd="true" />
+diff --git a/res/layout/activity_vod_home.xml b/res/layout/activity_vod_home.xml
+--- a/res/layout/activity_vod_home.xml	2026-11-24 20:12:17.687254375 -0500
++++ b/res/layout/activity_vod_home.xml	2026-11-24 20:18:14.980939104 -0500
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<com.module.view.AdvertiseLayout android:id="@id/adLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" app:ad_type="apk_home_page" app:defaultBgId="@color/color_0b0b0b"
++<com.module.view.AdvertiseLayout android:id="@id/adLayout" android:layout_width="fill_parent" android:layout_height="fill_parent" app:ad_type="apk_home_page" app:defaultBgId="@color/m3_background"
+   xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+     <com.core.sysopt.mark.live.NotificationBarRootView android:orientation="horizontal" android:layout_width="300.0dip" android:layout_height="67.0dip">
+         <FrameLayout android:layout_width="50.0dip" android:layout_height="51.0dip" android:layout_marginLeft="39.0dip">
+diff --git a/res/layout/fragment_home_live.xml b/res/layout/fragment_home_live.xml
+--- a/res/layout/fragment_home_live.xml	2026-11-24 20:12:18.100272626 -0500
++++ b/res/layout/fragment_home_live.xml	2026-11-24 20:18:14.980486062 -0500
+@@ -2,7 +2,7 @@
+ <com.core.sysopt.mark.home.HomeLiveRootView android:layout_width="fill_parent" android:layout_height="fill_parent"
+   xmlns:android="http://schemas.android.com/apk/res/android">
+     <ImageView android:layout_gravity="center|right|top" android:layout_width="17.0dip" android:layout_height="13.0dip" android:layout_marginRight="230.0dip" android:src="@drawable/home_live_channel_up" />
+-    <com.widget.custom.MemoryListView android:layout_gravity="right" android:id="@id/mLvChannelList" android:focusable="false" android:scrollbars="none" android:layout_width="259.0dip" android:layout_height="480.0dip" android:layout_marginTop="26.0dip" android:layout_marginRight="27.0dip" android:listSelector="@drawable/selector_home_live_channel" android:divider="@color/transparent" android:dividerHeight="13.0dip" />
++    <com.widget.custom.MemoryListView android:layout_gravity="right" android:id="@id/mLvChannelList" android:focusable="false" android:scrollbars="none" android:layout_width="259.0dip" android:layout_height="480.0dip" android:layout_marginTop="26.0dip" android:layout_marginRight="27.0dip" android:listSelector="@drawable/selector_home_live_channel" android:divider="@color/m3_outline" android:dividerHeight="13.0dip" />
+     <ImageView android:layout_gravity="bottom|center|right" android:layout_width="17.0dip" android:layout_height="13.0dip" android:layout_marginRight="230.0dip" android:layout_marginBottom="92.0dip" android:src="@drawable/home_live_channel_down" />
+     <LinearLayout android:layout_gravity="bottom" android:orientation="horizontal" android:id="@id/mLlFastBtn" android:layout_width="wrap_content" android:layout_height="53.0dip" android:layout_marginLeft="129.0dip" android:layout_marginBottom="67.0dip">
+         <ImageView android:id="@id/mIvAllColumn" android:background="@drawable/selector_home_live_btn_all_bg" android:padding="10.0dip" android:focusable="true" android:nextFocusDown="@id/mIvAllColumn" android:layout_width="53.0dip" android:layout_height="53.0dip" />
+@@ -10,7 +10,7 @@
+         <ImageView android:id="@id/mIvSearch" android:background="@drawable/selector_home_live_btn_search_bg" android:padding="10.0dip" android:focusable="true" android:nextFocusLeft="@id/mIvFav" android:nextFocusDown="@id/mIvSearch" android:layout_width="53.0dip" android:layout_height="53.0dip" android:layout_marginLeft="27.0dip" />
+     </LinearLayout>
+     <FrameLayout android:id="@id/mFlMainLive" android:focusableInTouchMode="true" android:layout_width="853.0dip" android:layout_height="480.0dip" android:layout_marginLeft="128.0dip" />
+-    <RelativeLayout android:id="@id/mLlBottomInfo" android:background="@drawable/shape_home_live_bottom_bg" android:layout_width="853.0dip" android:layout_height="80.0dip" android:layout_marginLeft="128.0dip" android:layout_marginTop="400.0dip">
++    <RelativeLayout android:id="@id/mLlBottomInfo" android:background="@drawable/m3_bottom_scrim" android:layout_width="853.0dip" android:layout_height="80.0dip" android:layout_marginLeft="128.0dip" android:layout_marginTop="400.0dip">
+         <TextView android:textSize="21.0sp" android:textColor="@color/color_font_second" android:id="@id/mTvChannel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="42.0dip" android:layout_marginRight="26.0dip" android:layout_toLeftOf="@id/mIvFullScreen" />
+         <ImageView android:id="@id/mIvFullScreen" android:layout_width="23.0dip" android:layout_height="25.0dip" android:layout_marginTop="44.0dip" android:layout_marginRight="26.0dip" android:src="@mipmap/icon_full_screen" android:layout_alignParentRight="true" />
+     </RelativeLayout>
+diff --git a/res/layout/layout_live_player_controller.xml b/res/layout/layout_live_player_controller.xml
+--- a/res/layout/layout_live_player_controller.xml	2026-11-24 20:12:16.158874784 -0500
++++ b/res/layout/layout_live_player_controller.xml	2026-11-24 20:18:14.980849685 -0500
+@@ -1,8 +1,8 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <merge
+   xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+-    <com.module.view.notice.NoticeTextView android:textSize="25.0sp" android:textColor="@android:color/white" android:ellipsize="marquee" android:gravity="center" android:layout_gravity="top" android:id="@id/mNoticeView" android:background="@android:color/black" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="50.0dip" android:scrollHorizontally="true" android:singleLine="true" android:marqueeRepeatLimit="marquee_forever" android:alpha="0.9" app:noticeType="Live" />
+-    <TextView android:textSize="21.0sp" android:textColor="@color/color_ffffffff" android:gravity="center" android:layout_gravity="center" android:id="@id/mTvPlayNotice" android:background="@color/color_000000" android:paddingLeft="71.0dip" android:paddingRight="70.0dip" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_centerInParent="true" />
++    <com.module.view.notice.NoticeTextView android:textSize="25.0sp" android:textColor="@android:color/white" android:ellipsize="marquee" android:gravity="center" android:layout_gravity="top" android:id="@id/mNoticeView" android:background="@color/m3_surface" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="50.0dip" android:scrollHorizontally="true" android:singleLine="true" android:marqueeRepeatLimit="marquee_forever" android:alpha="0.9" app:noticeType="Live" />
++    <TextView android:textSize="21.0sp" android:textColor="@color/color_ffffffff" android:gravity="center" android:layout_gravity="center" android:id="@id/mTvPlayNotice" android:background="@color/m3_surface" android:paddingLeft="71.0dip" android:paddingRight="70.0dip" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_centerInParent="true" />
+     <LinearLayout android:gravity="center" android:layout_gravity="center" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+         <com.live.view.player.LivePlayerBufferView android:gravity="center" android:id="@id/mBufferView" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+         <TextView android:textSize="22.0sp" android:textStyle="bold" android:textColor="@color/color_ffffffff" android:gravity="center" android:id="@id/mTvPlayStatus" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxWidth="500.0dip" />
+diff --git a/res/values/colors.xml b/res/values/colors.xml
+--- a/res/values/colors.xml	2026-11-24 20:12:19.000774373 -0500
++++ b/res/values/colors.xml	2026-11-24 20:18:14.973531871 -0500
+@@ -27,11 +27,11 @@
+     <color name="cardview_light_background">#ffffffff</color>
+     <color name="cardview_shadow_end_color">#03000000</color>
+     <color name="cardview_shadow_start_color">#37000000</color>
+-    <color name="colorAccent">#ffff4081</color>
+-    <color name="colorPrimary">#ff3a66fe</color>
+-    <color name="colorPrimaryDark">#ff303f9f</color>
++    <color name="colorAccent">#ff66e3ff</color>
++    <color name="colorPrimary">#ffa78bfa</color>
++    <color name="colorPrimaryDark">#ff6d5fe6</color>
+     <color name="color_000000">#ff000000</color>
+-    <color name="color_00191919">#00191919</color>
++    <color name="color_00191919">#00151927</color>
+     <color name="color_001a1a1a">#001a1a1a</color>
+     <color name="color_001e68">#ff001e68</color>
+     <color name="color_004c24">#ff004c24</color>
+@@ -50,9 +50,9 @@
+     <color name="color_0555a5">#ff0555a5</color>
+     <color name="color_08101d">#6608101d</color>
+     <color name="color_083008">#ff083008</color>
+-    <color name="color_0a0a0a">#ff0a0a0a</color>
++    <color name="color_0a0a0a">#ff0a0c12</color>
+     <color name="color_0a6638">#ff0a6638</color>
+-    <color name="color_0b0b0b">#ff0b0b0b</color>
++    <color name="color_0b0b0b">#ff0a0c12</color>
+     <color name="color_0c6cc8">#ff0c6cc8</color>
+     <color name="color_0fc4c4c4">#0fc4c4c4</color>
+     <color name="color_0fffffff">#0fffffff</color>
+@@ -62,10 +62,10 @@
+     <color name="color_161927">#ff161927</color>
+     <color name="color_1658b6">#ff1658b6</color>
+     <color name="color_17181b">#ff17181b</color>
+-    <color name="color_191919">#ff191919</color>
++    <color name="color_191919">#ff151927</color>
+     <color name="color_1a000000">#1a000000</color>
+     <color name="color_1a070b1c">#1a070b1c</color>
+-    <color name="color_1a1a1a">#ff1a1a1a</color>
++    <color name="color_1a1a1a">#ff151927</color>
+     <color name="color_1a777980">#1a777980</color>
+     <color name="color_1abca7a7">#1abca7a7</color>
+     <color name="color_1ac4c4c4">#1ac4c4c4</color>
+@@ -98,7 +98,7 @@
+     <color name="color_353538">#ff353538</color>
+     <color name="color_35383d">#ff35383d</color>
+     <color name="color_363B44">#ff363b44</color>
+-    <color name="color_373636">#ff373636</color>
++    <color name="color_373636">#ff1d2234</color>
+     <color name="color_374855">#ff374855</color>
+     <color name="color_393A3A">#ff393a3a</color>
+     <color name="color_3A66FE">#ff3a66fe</color>
+@@ -146,7 +146,7 @@
+     <color name="color_5e5e5e">#ff5e5e5e</color>
+     <color name="color_61ffffff">#61ffffff</color>
+     <color name="color_63676b">#ff63676b</color>
+-    <color name="color_6442EC">#ff6442ec</color>
++    <color name="color_6442EC">#ff7c5cff</color>
+     <color name="color_66000000">#66000000</color>
+     <color name="color_6608101d">#6608101d</color>
+     <color name="color_66171819">#66171819</color>
+@@ -188,7 +188,7 @@
+     <color name="color_858d94">#ff858d94</color>
+     <color name="color_868d94">#ff868d94</color>
+     <color name="color_88000000">#88000000</color>
+-    <color name="color_888787">#ff888787</color>
++    <color name="color_888787">#ff9b99ad</color>
+     <color name="color_8c000000">#8c000000</color>
+     <color name="color_8c8c8c">#ff8c8c8c</color>
+     <color name="color_8c9194">#ff8c9194</color>
+@@ -238,12 +238,12 @@
+     <color name="color_b3000000">#b3000000</color>
+     <color name="color_b30a1013">#b30a1013</color>
+     <color name="color_b31a1a1a">#b31a1a1a</color>
+-    <color name="color_b3b3b3">#ffb3b3b3</color>
++    <color name="color_b3b3b3">#ff9b99ad</color>
+     <color name="color_b3b6b6">#ffb3b6b6</color>
+     <color name="color_b7000000">#b7000000</color>
+     <color name="color_b80101">#ffb80101</color>
+     <color name="color_bb000000">#bb000000</color>
+-    <color name="color_bbc0c4">#ffbbc0c4</color>
++    <color name="color_bbc0c4">#ffc9c7d6</color>
+     <color name="color_bc0d0d">#ffbc0d0d</color>
+     <color name="color_bcc2c4">#ffbcc2c4</color>
+     <color name="color_bdacacac">#bdacacac</color>
+@@ -255,10 +255,10 @@
+     <color name="color_bnt_focused">#ff3a66fe</color>
+     <color name="color_bnt_normal">#ff2f2f2f</color>
+     <color name="color_br_vod_btn_bg">#80666666</color>
+-    <color name="color_c4c4c4">#ffc4c4c4</color>
++    <color name="color_c4c4c4">#ffc9c7d6</color>
+     <color name="color_c5c5c5">#ffc5c5c5</color>
+     <color name="color_c62e2f">#ffc62e2f</color>
+-    <color name="color_c7c5c4">#ffc7c5c4</color>
++    <color name="color_c7c5c4">#ff9b99ad</color>
+     <color name="color_c91923">#ffc91923</color>
+     <color name="color_c93e3e">#ffc93e3e</color>
+     <color name="color_cc000000">#cc000000</color>
+@@ -317,7 +317,7 @@
+     <color name="color_feffff">#fffeffff</color>
+     <color name="color_ff0000">#ffff0000</color>
+     <color name="color_ff1a1a1a">#ff1a1a1a</color>
+-    <color name="color_ff3333">#ffff3333</color>
++    <color name="color_ff3333">#ff66e3ff</color>
+     <color name="color_ff5353">#ffff5353</color>
+     <color name="color_ff8300">#ffff8300</color>
+     <color name="color_ff9500">#ffff9500</color>
+@@ -338,14 +338,14 @@
+     <color name="color_font_error">#ffdc4903</color>
+     <color name="color_font_height_light">#ffffaa00</color>
+     <color name="color_font_login_email">#ffffffff</color>
+-    <color name="color_font_main">#ffffffff</color>
++    <color name="color_font_main">#fff7f5ff</color>
+     <color name="color_font_match_processing">#ff3b9dff</color>
+     <color name="color_font_normal">#ffc4c4c4</color>
+-    <color name="color_font_second">#ffffffff</color>
+-    <color name="color_font_white">#ffffffff</color>
++    <color name="color_font_second">#ffc9c7d6</color>
++    <color name="color_font_white">#fff7f5ff</color>
+     <color name="color_green">#ff4d9c6f</color>
+     <color name="color_kids_item_text_f">#ffffdd33</color>
+-    <color name="color_main">#ff3a66fe</color>
++    <color name="color_main">#ffa78bfa</color>
+     <color name="color_main_66">#663b9dff</color>
+     <color name="color_match_percent_stat">#ffff3333</color>
+     <color name="color_personal_bottom_item">#33ffffff</color>
+@@ -378,7 +378,7 @@
+     <color name="design_dark_default_color_on_primary">#ff000000</color>
+     <color name="design_dark_default_color_on_secondary">#ff000000</color>
+     <color name="design_dark_default_color_on_surface">#ffffffff</color>
+-    <color name="design_dark_default_color_primary">#ffbb86fc</color>
++    <color name="design_dark_default_color_primary">#ffa78bfa</color>
+     <color name="design_dark_default_color_primary_dark">#ff000000</color>
+     <color name="design_dark_default_color_primary_variant">#ff3700b3</color>
+     <color name="design_dark_default_color_secondary">#ff03dac6</color>
+@@ -391,8 +391,8 @@
+     <color name="design_default_color_on_primary">#ffffffff</color>
+     <color name="design_default_color_on_secondary">#ff000000</color>
+     <color name="design_default_color_on_surface">#ff000000</color>
+-    <color name="design_default_color_primary">#ff6200ee</color>
+-    <color name="design_default_color_primary_dark">#ff3700b3</color>
++    <color name="design_default_color_primary">#ffa78bfa</color>
++    <color name="design_default_color_primary_dark">#ff6d5fe6</color>
+     <color name="design_default_color_primary_variant">#ff3700b3</color>
+     <color name="design_default_color_secondary">#ff03dac6</color>
+     <color name="design_default_color_secondary_variant">#ff018786</color>
+@@ -527,4 +527,21 @@
+     <color name="upush_notification_content_color">#8a000000</color>
+     <color name="upush_notification_title_color">#de000000</color>
+     <color name="white">#ffffffff</color>
++
++    <!-- Added by tv-modern-ui: Material 3 dark palette -->
++    <color name="m3_background">#ff0a0c12</color>
++    <color name="m3_surface">#ff151927</color>
++    <color name="m3_surface_2">#ff1d2234</color>
++    <color name="m3_surface_3">#ff262c42</color>
++    <color name="m3_primary">#ffa78bfa</color>
++    <color name="m3_primary_dark">#ff6d5fe6</color>
++    <color name="m3_on_primary">#ff1a1233</color>
++    <color name="m3_secondary">#ff66e3ff</color>
++    <color name="m3_secondary_dark">#ff2aa9c9</color>
++    <color name="m3_on_secondary">#ff05202b</color>
++    <color name="m3_tertiary">#ffffb586</color>
++    <color name="m3_on_surface">#fff7f5ff</color>
++    <color name="m3_on_surface_variant">#ffc9c7d6</color>
++    <color name="m3_outline">#ff47465c</color>
++    <color name="m3_error">#ffffb4ab</color>
+ </resources>
+diff --git a/res/values/styles.xml b/res/values/styles.xml
+--- a/res/values/styles.xml	2026-11-24 20:12:19.133724698 -0500
++++ b/res/values/styles.xml	2026-11-24 20:18:14.974480676 -0500
+@@ -1551,8 +1551,20 @@
+         <item name="startIconTint">@color/mtrl_outlined_icon_tint</item>
+     </style>
+     <style name="Base.Widget.MaterialComponents.TextView" parent="@style/Widget.AppCompat.TextView" />
+-    <style name="BaseAppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+-        <item name="android:windowBackground">@null</item>
++    <style name="BaseAppTheme" parent="@style/Theme.MaterialComponents.NoActionBar">
++        <item name="colorPrimary">@color/m3_primary</item>
++        <item name="colorPrimaryVariant">@color/m3_primary_dark</item>
++        <item name="colorOnPrimary">@color/m3_on_primary</item>
++        <item name="colorSecondary">@color/m3_secondary</item>
++        <item name="colorSecondaryVariant">@color/m3_secondary_dark</item>
++        <item name="colorOnSecondary">@color/m3_on_secondary</item>
++        <item name="colorSurface">@color/m3_surface</item>
++        <item name="colorOnSurface">@color/m3_on_surface</item>
++        <item name="colorError">@color/m3_error</item>
++        <item name="android:colorBackground">@color/m3_background</item>
++        <item name="android:textColorPrimary">@color/m3_on_surface</item>
++        <item name="android:textColorSecondary">@color/m3_on_surface_variant</item>
++        <item name="android:windowBackground">@color/m3_background</item>
+         <item name="android:windowNoTitle">true</item>
+         <item name="android:windowFullscreen">true</item>
+         <item name="android:windowSoftInputMode">adjustNothing</item>
+@@ -3648,6 +3660,6 @@
+         <item name="android:clickable">true</item>
+     </style>
+     <style name="welcome_style" parent="@style/BaseAppTheme">
+-        <item name="android:windowBackground">@android:color/black</item>
++        <item name="android:windowBackground">@color/m3_background</item>
+     </style>
+ </resources>

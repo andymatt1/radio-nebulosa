@@ -2,5 +2,5 @@
 <resources>
     <string name="app_name">Radio Nebulosa</string>
     <string name="notification_channel">Reproducción de radio</string>
-    <string name="app_version_placeholder">1.5.0</string>
+    <string name="app_version_placeholder">1.6.0</string>
 </resources>

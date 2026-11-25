@@ -1,14 +1,14 @@
 # Radio Nebulosa
 
-Aplicación Android nativa (Kotlin + Jetpack Compose) dedicada **exclusivamente a las emisoras de radio de Colombia**. Arranca directamente en el catálogo, sin pantalla de bienvenida, e incluye catálogo en tiempo real desde Radio Browser API, reproductor HLS con segundo plano y auto-actualización del APK.
+Aplicación Android nativa (Kotlin + Jetpack Compose) dedicada **exclusivamente a las emisoras de radio de Colombia**. Arranca directamente en un catálogo cacheado con estética de plataforma de TV, fondo e icono nebulosos, reproductor HLS en segundo plano y auto-actualización del APK.
 
 ## Características
 
-- **Arranque directo:** la app abre el catálogo sin pantalla de bienvenida ni animación previa. Las URLs HLS con parámetros sucios (como La Mega Bogotá) se normalizan antes de reproducir.
+- **Arranque instantáneo:** el catálogo se guarda en el dispositivo y se muestra de inmediato; solo se consulta Radio Browser cuando tiene más de 10 minutos. Indicador de actualización en segundo plano, sin pantallas de espera.
 - **Catálogo 100 % Colombia:** consulta `countrycode=CO` a Radio Browser API con `limit=2000` y respaldo entre 4 espejos. La URL se construye con `HttpUrl.Builder` (sin espacios ni saltos) y se filtra de nuevo por `countrycode` en el cliente; actualmente devuelve 675 emisoras. Trae nombre, logo (`favicon`), ciudad, géneros (`tags`) y URL de stream (`url_resolved`).
-- **Interfaz estilo sección Radio de Claro Música:** encabezado con buscador instantáneo y ajustes, carrusel de destacadas, píldoras de géneros, filtro por ciudades y listado de emisoras.
+- **Interfaz estilo plataforma de TV:** cabecera con pestañas *Inicio / Mi lista*, banner protagonista, carrusel de canales en vivo, píldoras de géneros, ciudades y guía completa de emisoras. Fondo e icono con la arte nebulosa mística, paleta violeta/cian/magenta.
 - **Logo siempre impecable:** si Radio Browser deja el `favicon` vacío o con `"null"`, se busca el icono del dominio de la emisora con el servicio sin rastreo de DuckDuckGo; si falla, se muestra una tarjeta cósmica con iniciales y color determinista por emisora.
-- **Reproductor:** mini-reproductor flotante con ondas "EN VIVO" y vista completa con fondo difuminado del logo, halo animado, favoritos, volumen, play/pausa y reconectar. La emisora se conserva al pausar y se reanuda sin volver a buscarla.
+- **Reproductor:** mini-reproductor flotante con ondas "EN VIVO" y vista completa con fondo nebuloso, halo animado, favoritos, volumen, play/pausa y reconectar. La emisora se conserva al pausar y se reanuda sin volver a buscarla.
 - **Favoritos:** botón de corazón en cada emisora, en el mini-reproductor y en el reproductor completo. Sección **Mis favoritos**, filtro **♥ Favoritos** y guardado persistente de la emisora completa.
 - **Búsqueda:** tolerante a acentos ("bogota" encuentra "Bogotá"), por nombre, ciudad, género o frecuencia, con botón de limpiar.
 - **Segundo plano:** `Media3 / ExoPlayer` + módulo **HLS** + `MediaSessionService`; notificación multimedia, pantalla de bloqueo y controles externos. Si falla la URL resuelta, reintenta con la URL original y aplica backoff 1/3/8/15 s.
