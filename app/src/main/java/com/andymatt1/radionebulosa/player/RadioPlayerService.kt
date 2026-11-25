@@ -17,6 +17,7 @@ import androidx.media3.session.MediaSessionService
 import com.andymatt1.radionebulosa.MainActivity
 import com.andymatt1.radionebulosa.R
 import com.andymatt1.radionebulosa.RadioNebulosaApp
+import com.andymatt1.radionebulosa.data.Station
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,6 +38,7 @@ class RadioPlayerService : MediaSessionService() {
     private var session: MediaSession? = null
     private var retryJob: Job? = null
     private var retryAttempt = 0
+    private var usedFallback = false
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onCreate() {
@@ -53,7 +55,7 @@ class RadioPlayerService : MediaSessionService() {
             .setConnectTimeoutMs(15_000)
             .setReadTimeoutMs(20_000)
             .setAllowCrossProtocolRedirects(true)
-            .setUserAgent("RadioNebulosa/1.4.1 (Android)")
+            .setUserAgent("RadioNebulosa/1.5.0 (Android)")
 
         val exoPlayer = ExoPlayer.Builder(this)
             .setMediaSourceFactory(
@@ -72,12 +74,22 @@ class RadioPlayerService : MediaSessionService() {
 
         exoPlayer.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
-                if (isPlaying) retryAttempt = 0
+                if (isPlaying) {
+                    retryAttempt = 0
+                    usedFallback = false
+                }
+            }
+
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                retryAttempt = 0
+                usedFallback = false
             }
 
             override fun onPlayerError(error: PlaybackException) {
-                // Reintento automático: los streams de radio suelen fallar al conectar.
-                player?.currentMediaItem?.let { scheduleRetry(it) }
+                // Muchas emisoras fallan al conectar; se reintenta con la
+                // siguiente URL disponible y con un backoff más amable.
+                val item = player?.currentMediaItem ?: return
+                scheduleRetry(nextAlternative(item))
             }
         })
 
@@ -97,12 +109,32 @@ class RadioPlayerService : MediaSessionService() {
             .build()
     }
 
+    /** Prueba la URL original de Radio Browser si falló la resuelta. */
+    private fun nextAlternative(item: MediaItem): MediaItem {
+        if (usedFallback) return item
+        val station = item.localConfiguration?.tag as? Station
+        val triedUri = item.localConfiguration?.uri?.toString()
+        if (station != null && triedUri != null) {
+            val next = station.streamUrls.firstOrNull { it != triedUri }
+            if (next != null) {
+                usedFallback = true
+                return MediaItem.Builder()
+                    .setMediaId(station.id)
+                    .setUri(next)
+                    .setTag(station)
+                    .setMediaMetadata(item.mediaMetadata)
+                    .build()
+            }
+        }
+        return item
+    }
+
     private fun scheduleRetry(item: MediaItem) {
         if (retryAttempt >= MAX_RETRIES) return
         retryJob?.cancel()
-        retryAttempt++
+        val attempt = ++retryAttempt
         retryJob = scope.launch {
-            delay(1_000L * retryAttempt)
+            delay(RETRY_DELAYS[(attempt - 1).coerceAtMost(RETRY_DELAYS.lastIndex)])
             player?.let { p ->
                 p.setMediaItem(item)
                 p.prepare()
@@ -124,6 +156,7 @@ class RadioPlayerService : MediaSessionService() {
     }
 
     private companion object {
-        const val MAX_RETRIES = 3
+        val RETRY_DELAYS = longArrayOf(1_000L, 3_000L, 8_000L, 15_000L)
+        val MAX_RETRIES = RETRY_DELAYS.size
     }
 }

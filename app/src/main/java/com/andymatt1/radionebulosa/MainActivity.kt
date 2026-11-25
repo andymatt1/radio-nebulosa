@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat
 import com.andymatt1.radionebulosa.ui.home.HomeScreen
 import com.andymatt1.radionebulosa.ui.player.PlayerScreen
 import com.andymatt1.radionebulosa.ui.settings.SettingsScreen
-import com.andymatt1.radionebulosa.ui.splash.SplashScreen
 import com.andymatt1.radionebulosa.ui.theme.RadioNebulosaTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,14 +38,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             RadioNebulosaTheme {
-                var screen by rememberSaveable { mutableStateOf(Screen.SPLASH) }
+                var screen by rememberSaveable { mutableStateOf(Screen.HOME) }
 
                 BackHandler(enabled = screen == Screen.PLAYER || screen == Screen.SETTINGS) {
                     screen = Screen.HOME
                 }
 
                 when (screen) {
-                    Screen.SPLASH -> SplashScreen(onFinish = { screen = Screen.HOME })
                     Screen.HOME -> HomeScreen(
                         viewModel = viewModel,
                         onOpenPlayer = { screen = Screen.PLAYER },
@@ -70,5 +68,5 @@ class MainActivity : ComponentActivity() {
         viewModel.syncPlayerState()
     }
 
-    private enum class Screen { SPLASH, HOME, PLAYER, SETTINGS }
+    private enum class Screen { HOME, PLAYER, SETTINGS }
 }

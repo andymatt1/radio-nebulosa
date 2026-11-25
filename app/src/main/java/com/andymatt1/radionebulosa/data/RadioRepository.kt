@@ -22,7 +22,7 @@ object RadioRepository {
         "https://at1.api.radio-browser.info"
     )
 
-    private const val USER_AGENT = "RadioNebulosa/1.4.1 (Android)"
+    private const val USER_AGENT = "RadioNebulosa/1.5.0 (Android)"
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)

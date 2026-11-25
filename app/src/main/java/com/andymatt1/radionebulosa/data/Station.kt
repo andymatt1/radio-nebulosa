@@ -30,9 +30,20 @@ data class Station(
     val votes: Int = 0,
     @SerialName("lastcheckok") val lastCheckOk: Int = 1
 ) {
-    /** URL definitiva del stream (Radio Browser la resuelve en `url_resolved`). */
+    /**
+     * URL definitiva del stream. Radio Browser la resuelve en `url_resolved`,
+     * pero algunas emisoras (como La Mega Bogotá) guardan ahí una URL HLS con
+     * parámetros de seguimiento incompletos. Para `mdstrm.com` se limpia la
+     * query y se conserva el playlist limpio, que redirige correctamente.
+     */
     val streamUrl: String
-        get() = urlResolved.ifBlank { url }
+        get() = streamUrls.firstOrNull().orEmpty()
+
+    /** URLs a probar, en orden: resuelta primero y original después. */
+    val streamUrls: List<String>
+        get() = listOf(urlResolved, url)
+            .mapNotNull(::cleanStreamUrl)
+            .distinct()
 
     val displayName: String
         get() = name.replace(Regex("\\s+"), " ").trim().ifBlank { "Emisora sin nombre" }
@@ -83,6 +94,18 @@ data class Station(
             else -> "https://$value"
         }
         return runCatching { URL(candidate).toString() }.getOrNull()
+    }
+
+    /** Limpia URLs HLS de mdstrm con parámetros de tracking rotos. */
+    private fun cleanStreamUrl(raw: String): String? {
+        val normalized = cleanUrl(raw) ?: return null
+        if (!normalized.contains(".m3u8", ignoreCase = true)) return normalized
+        val host = runCatching { URL(normalized).host }.getOrNull() ?: return normalized
+        return if (host == "mdstrm.com" || host.endsWith(".mdstrm.com")) {
+            normalized.substringBefore("?")
+        } else {
+            normalized
+        }
     }
 
     private fun hostOf(url: String): String? =

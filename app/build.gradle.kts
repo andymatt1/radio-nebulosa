@@ -13,8 +13,8 @@ android {
         applicationId = "com.andymatt1.radionebulosa"
         minSdk = 23
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.4.1"
+        versionCode = 7
+        versionName = "1.5.0"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -76,6 +76,7 @@ dependencies {
 
     // Reproducción en segundo plano (Media3 / ExoPlayer)
     implementation("androidx.media3:media3-exoplayer:1.4.1")
+    implementation("androidx.media3:media3-exoplayer-hls:1.4.1")
     implementation("androidx.media3:media3-session:1.4.1")
 
     // Red, imágenes y serialización

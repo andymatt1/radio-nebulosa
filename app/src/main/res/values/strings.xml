@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Radio Nebulosa</string>
-    <string name="welcome_message">Bienvenido a Radio Nebulosa</string>
     <string name="notification_channel">Reproducción de radio</string>
-    <string name="app_version_placeholder">1.4.1</string>
+    <string name="app_version_placeholder">1.5.0</string>
 </resources>

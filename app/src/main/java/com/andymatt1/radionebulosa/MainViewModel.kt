@@ -215,6 +215,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         return MediaItem.Builder()
             .setMediaId(station.id)
             .setUri(station.streamUrl)
+            .setTag(station)
             .setMediaMetadata(metadata)
             .build()
     }
