@@ -1,7 +1,7 @@
 {
-  "latestVersion": "1.6.0",
-  "latestVersionCode": 8,
-  "sha256": "46a9e08c7529a8c390debbfa7a841536a151d7ad463a182f79c125ce5e36de66",
-  "apkUrl": "https://github.com/andymatt1/radio-nebulosa/releases/download/v1.6.0/radio-nebulosa-v1.6.0.apk",
-  "changelog": "v1.6.0:\n• Carga rápida: el catálogo se guarda en el teléfono y aparece al instante; solo se actualiza en segundo plano cada 10 minutos.\n• Interfaz estilo plataforma de TV y tema Nebulosa MOD: pestañas Inicio/Mi lista, banner destacado, carrusel de canales y guía de emisoras. Nuevo icono y fondo nebuloso místico.\n• Búsqueda indexada para responder sin retardos.\n• Paleta mística violeta/cian/magenta y reproductor con el mismo fondo nebuloso."
+  "latestVersion": "1.6.1",
+  "latestVersionCode": 9,
+  "sha256": "8b0a1b9a3f84908c683df06253a53065bc9b154e441e6478864636f344288b3a",
+  "apkUrl": "https://github.com/andymatt1/radio-nebulosa/releases/download/v1.6.1/radio-nebulosa-v1.6.1.apk",
+  "changelog": "v1.6.1:\n• Icono cósmico anterior restaurado para que vuelva a verse como siempre.\n• Se conserva toda la interfaz nueva estilo plataforma de TV, el fondo nebuloso místico, la carga cacheada y el soporte HLS."
 }

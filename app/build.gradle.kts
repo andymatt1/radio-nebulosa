@@ -13,8 +13,8 @@ android {
         applicationId = "com.andymatt1.radionebulosa"
         minSdk = 23
         targetSdk = 36
-        versionCode = 8
-        versionName = "1.6.0"
+        versionCode = 9
+        versionName = "1.6.1"
 
         vectorDrawables {
             useSupportLibrary = true
