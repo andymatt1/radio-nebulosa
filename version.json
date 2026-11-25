@@ -1,7 +1,7 @@
 {
-  "latestVersion": "1.4.0",
-  "latestVersionCode": 5,
-  "sha256": "c1b5904ad1dfa0bb9016fcad20e1176ac06bb3e4aef53fae156f371cb5f1e01b",
-  "apkUrl": "https://github.com/andymatt1/radio-nebulosa/releases/download/v1.4.0/radio-nebulosa-v1.4.0.apk",
-  "changelog": "v1.4.0:\n• Iconos corregidos: cuando Radio Browser no trae favicon se usa el icono del dominio de la emisora, con respaldo cósmico por iniciales.\n• Objetivo Android 16 (API 36) para cumplir requisitos de Play Store y reducir avisos de compatibilidad.\n• La auto-actualización verifica el SHA-256 del APK antes de instalar."
+  "latestVersion": "1.4.1",
+  "latestVersionCode": 6,
+  "sha256": "fc4c13ff50407a4b248f09f0cf108e7cc2625d1a5aecae6520729ccdb0e6b8bb",
+  "apkUrl": "https://github.com/andymatt1/radio-nebulosa/releases/download/v1.4.1/radio-nebulosa-v1.4.1.apk",
+  "changelog": "v1.4.1:\n• Petición a Radio Browser corregida: URL construida sin espacios ni saltos, limit=2000 y doble filtro countrycode=CO en el cliente.\n• El catálogo pasa de 300 a 675 emisoras colombianas.\n• User-Agent personalizado centralizado en RadioNebulosa/1.4.1 (Android)."
 }

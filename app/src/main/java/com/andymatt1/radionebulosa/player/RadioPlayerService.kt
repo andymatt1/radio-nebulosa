@@ -53,7 +53,7 @@ class RadioPlayerService : MediaSessionService() {
             .setConnectTimeoutMs(15_000)
             .setReadTimeoutMs(20_000)
             .setAllowCrossProtocolRedirects(true)
-            .setUserAgent("RadioNebulosa/1.4.0 (Android)")
+            .setUserAgent("RadioNebulosa/1.4.1 (Android)")
 
         val exoPlayer = ExoPlayer.Builder(this)
             .setMediaSourceFactory(

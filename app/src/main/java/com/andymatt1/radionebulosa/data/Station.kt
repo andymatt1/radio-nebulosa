@@ -22,6 +22,7 @@ data class Station(
     val favicon: String = "",
     val homepage: String = "",
     val country: String = "",
+    @SerialName("countrycode") val countryCode: String = "",
     val state: String = "",
     val tags: String = "",
     val codec: String = "",
